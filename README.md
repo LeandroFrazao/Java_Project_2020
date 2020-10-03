@@ -12,7 +12,6 @@ Method of Submission: Moodle Submission.
 
 Module Learning Outcomes Assessed
 • Select and integrate multiple algorithms and constructs to solve a larger problem in a real-world context while identifying and appraising the trade-offs of different candidate approaches in terms of space and time complexity.
-
 • Develop and implement custom algorithms and constructs for a wide variety of application-specific tasks, taking performance and system resources into consideration.
 • Employ a variety of different constructs and to implement and categorise different searching and traversal algorithms over said constructs
 Assignment Introduction
