@@ -12,16 +12,19 @@ Method of Submission: Moodle Submission.
 
 Module Learning Outcomes Assessed
 • Select and integrate multiple algorithms and constructs to solve a larger problem in a real-world context while identifying and appraising the trade-offs of different candidate approaches in terms of space and time complexity.
+
 • Develop and implement custom algorithms and constructs for a wide variety of application-specific tasks, taking performance and system resources into consideration.
 • Employ a variety of different constructs and to implement and categorise different searching and traversal algorithms over said constructs
 Assignment Introduction
+
 A library has come to you as a developer and outlined that currently they do not have any software to track the different titles they have in stock, users of the library and borrowings. They have asked you to develop a system which will allow them to do this. The library doesn’t have a budget for a database, so your solution must implement a text file based system to ensure persistency of the data.
 Specific Requirements
+
 • The library system must include the following entities:
 o Book: To model all data relevant to the books. ID, title, author and/or any other piece of information that you consider relevant.
 o Reader: To model all data relevant to the users of the library. ID, name, address and/or any other piece of information that you consider relevant.
 • When the program is executed, it must automatically load onto memory the data that exists on the text files(s) in the form of objects. Books, readers and any other entity that you include in your design (e.g. borrowings).
-Algorithms and Constructs Page 2 of 3
+
 • Consider your user to be an employee from the library. After all the data has been loaded, the user should be presented with the following options.
 o Search for a specific book by title and/or author name.
 o List all books by title and/or author name alphabetical order.
