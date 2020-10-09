@@ -6,6 +6,8 @@
 package ClassColection;
 
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,23 +35,43 @@ public class UserScreen {
         System.out.println("2 - Readers");
         System.out.println("3 - Borrow a book");
         System.out.println("4 - Return a book");
-        System.out.println("Enter the option: < only numbers >");
-        //choice = sc.nextInt();
-         idleInput();
-        
-        System.out.print("(Shortcuts ex: to list all Books enter 12)");
-       //choice = userInput(input);
-       
-    }
+        System.out.print("Enter the option: < only numbers >");
+        System.out.println("(Shortcuts ex: to list all Books enter 12)");
+        controller(sc);
+              }
     
-   private int idleInput(){
+    private void controller(Scanner sc){
+        while (sc.hasNext()){
+            if (sc.hasNextInt()){
+                choice = Integer.parseInt(sc.next());
+            }
+            else{
+                System.out.print("\b--- Invalid --- try again");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(UserScreen.class.getName()).log(Level.SEVERE, null, ex);
+                }}
+            
+                
+                System.out.print("\b\r\r\r\r\r\r\r\rr\r\r\b\b\b\b\b\b");
+                //System.out.print(String.format("\f",1));
+                sc.next();
+            
+            }
+        
+ 
+    } 
+    
+    
+    private int idleInput(){
         
         
         Thread th = new Thread(){
             @Override
             public void run(){
                 choice = sc.nextInt(); 
-                System.out.println("\r\r");
+                //System.out.println("\r\r");
             }
         };
         th.start();
