@@ -8,6 +8,7 @@ package java_project_2020;
 import ClassColection.Books;
 import ClassColection.ReadWriteFile;
 import ClassColection.Readers;
+import ClassColection.UserScreen;
 import java.util.ArrayList;
 
 /**
@@ -41,6 +42,8 @@ public class Main {
       
         System.out.println(readers.get(0));
         System.out.println(books.get(0));
+        UserScreen us = new UserScreen();
+        us.mainScreen();
     
     //System.out.println( rw.readFiles());
 }

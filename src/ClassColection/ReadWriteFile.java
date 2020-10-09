@@ -4,18 +4,11 @@
  * and open the template in the editor.
  */
 package ClassColection;
-import ClassColection.Readers;
-/*//source of books datasheet
-// https://github.com/zygmuntz/goodbooks-10k/tree/master/books_xml*/
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
