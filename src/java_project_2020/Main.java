@@ -43,7 +43,7 @@ public class Main {
         System.out.println(readers.get(0));
         System.out.println(books.get(0));
         UserScreen us = new UserScreen();
-        us.mainScreen();
+        us.initUserScreen();
     
     //System.out.println( rw.readFiles());
 }
