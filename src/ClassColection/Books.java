@@ -28,11 +28,19 @@ public class Books {
         this.isbn = isbn;
         this.imageUrl = imageUrl;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
     
     // create toString contaning all variables
     @Override
     public String toString() {
-        return "Books{" + "id=" + id + ",Title:" + title + ", Author:" + author + ", Year:" + year + ", ISBN:" + isbn + ", Image URL:" + imageUrl + '}';
+        return "Books{" + "id=" + id + ",Title:" + title + ", Author:" + author + ", Year:" + year + ", ISBN:" + isbn + ", Image URL:" + imageUrl + "}\n";
     }
     
     

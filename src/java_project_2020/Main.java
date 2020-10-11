@@ -8,6 +8,7 @@ package java_project_2020;
 import ClassColection.Books;
 import ClassColection.ReadWriteFile;
 import ClassColection.Readers;
+import ClassColection.SortSearch;
 import ClassColection.UserScreen;
 import java.util.ArrayList;
 
@@ -29,22 +30,29 @@ public class Main {
     /**
      *
      */
+  
+    @SuppressWarnings("unchecked")
     public Main()  {
     
-        ArrayList <Books> books = new ArrayList();
-        ArrayList <Readers> readers = new ArrayList();
+        /*ArrayList <Books> books = new ArrayList<>();
+        ArrayList <Readers> readers = new ArrayList<>();
         
         ReadWriteFile rw = new ReadWriteFile();
         String file = "";
         //file = (readers.getClass().getMethods().toString().);
         readers = rw.readReaders(readers);
         books = rw.readBooks(books);
-      
-        System.out.println(readers.get(0));
-        System.out.println(books.get(0));
+        
+        SortSearch ss = new SortSearch();
+        ss.splitArray(books);
+        for (Books book : books){
+            System.out.println(book.getTitle());
+        }*/
+        /*System.out.println(readers.get(0));
+        System.out.println(books.get(0)); */
         UserScreen us = new UserScreen();
         us.initUserScreen();
-    
-    //System.out.println( rw.readFiles());
+           
+        //System.out.println( books);
 }
 }

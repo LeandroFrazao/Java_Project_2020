@@ -18,33 +18,20 @@ public  class ReadWriteFile {
     
     
     public ArrayList  readReaders(ArrayList array) {
-       
-        array = readFile("readers.csv", array );
-            
-    return array;
+              
+        return readFile("readers.csv", array );
     }
-//    public static <T> String className(List<T> list){
-//        return list.get(0).getClass().getCanonicalName();
-//    }
-    public  ArrayList  readBooks(ArrayList array) {
-        
-        array = readFile("books.csv", array );
-            
-    return array;
+    public  ArrayList  readBooks(ArrayList<Books> array) {
+
+        return readFile("books.csv", array );
     }
     
-    public  ArrayList  readFiles(ArrayList array) {
-            //ArrayList<> array = new ArrayList<>();
-            ArrayList <Books> books = new ArrayList();
-            ArrayList <Readers> readers = new ArrayList();    
-            array = readFile("readers.csv", readers );
-            //array = readFile("books.csv", books );        
-           /*catch (Throwable e){
-               System.out.println(e);
-           }*/
-       return array;    
+    public  ArrayList  readFiles(ArrayList<Readers> array) {
+           
+        return readFile("readers.csv", array ); 
     }
     
+  
     private ArrayList readFile(String file, ArrayList array)  {
                 
         BufferedReader br;
@@ -59,24 +46,29 @@ public  class ReadWriteFile {
             line = br.readLine();
             
             if (file.equals("readers.csv")){
+                ArrayList<Readers> readers = new ArrayList<Readers>();
                 while ( line != null ){
                     
                     String[] data = line.split(",");
                     Readers rd = new Readers(Integer.parseInt(data[0]),data[1],data[2],data[3],data[4].charAt(0),data[5],data[6], data[7], data[8]);
-                    array.add(rd);
+                    readers.add(rd);
                     line = br.readLine();
                 }
                 br.close();
-                
+                return readers;
             }else{
-                 while ( line != null ){
-                    line = br.readLine();
+               
+                ArrayList<Books> books = new ArrayList<Books>();
+                
+                while ( line != null ){
+                    
                     String[] data = line.split(",");
                     Books bk = new Books(Integer.parseInt(data[0]),data[1],data[2],data[3],data[4],data[5]);
-                    array.add(bk);
+                    books.add(bk);
                     line = br.readLine();
                 }
                 br.close();
+                return books;
             }
         }
         catch (IOException e){
@@ -84,7 +76,7 @@ public  class ReadWriteFile {
         }
             
             
-        return array ;
+        return null ;
     }
     
    
