@@ -13,47 +13,92 @@ import java.util.Scanner;
  * @author Leand
  */
 public class SortSearch {
-    int counterA = 0;
-    int counterB = 0;
+    //This variable carries choice made by the user.
+    private String choice ="";
+    // used to count possible dublicates when a target is searched
+    private static int countMatchRight =0, countMatchLeft=0;
+     
+    public void searchBook (ArrayList<Books> array, String title, String author){
+        //this.choice = "Title";
+        //splitArray(array);
+       boolean found=false;
+        for (Books book : array){
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase())){
+                found = true;
+                System.out.printf("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n","ID:",book.getId(),"Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
+            }
+        }
+        if (!found){        
+            System.out.println(title + " NOT FOUND");
+        }
+        
+       // System.out.println( binarySearchTitle(array, title, 0, array.size()));
+        
+        
+    }
     
-    public void searchBook (Scanner sc){
-        String target = "";
-        /*while (sc.hasNext()){
-
-            target = sc.next();
-            if (sc.NextInt()){
-                choice = Integer.parseInt(sc.next());
+    private static boolean binarySearchTitle(ArrayList<Books> array, String target, int low, int high){
             
-                if (option!=0 && choice!=0 && choice != 9){
-                    option= (option*10 + choice);
-                    controller(option);
-                }
-                
-                else {
-                    controller (choice);
-                }
-                
-               break;
-            }
-            else{
-                System.out.print("--- Invalid --- try again");
-                
-                System.out.print("\r\b"); // after the delay, the previous message on screen is deleted.
-                sc.next();
-                // this calls the last screen
-                controller(this.option);
-                
+            if (low < high){
             
+                int mid = (low + high)/2;
+                if (array.get(mid).getTitle().toLowerCase().contains(target.toLowerCase())){
+                    countMatchLeft = mid;
+                    countMatchRight= mid;
+                    while (countMatchLeft -1 > low &&   array.get(countMatchLeft).getTitle().toLowerCase().contains(target.toLowerCase())){
+                        countMatchLeft --;
+                    }
+                    while (countMatchRight +1 < high &&   array.get(countMatchRight).getTitle().toLowerCase().contains(target.toLowerCase())){
+                         countMatchRight ++;
+                    }
+                    for (int i=countMatchLeft+1; i<= countMatchRight-1; ++i ){
+                        System.out.println(array.get(i).getTitle());
+                    }
+                    return true;
+                }
+                else if (array.get(mid).getTitle().toLowerCase().compareToIgnoreCase(target)>0){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchTitle(array, target, low, mid -1);
+                }
+                else if (array.get(mid).getTitle().toLowerCase().compareToIgnoreCase(target)<0){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchTitle(array, target, mid+1, high);
+                }
+       
             }
-        */
-    } 
-    public void sortBooks(ArrayList<Books> array){
+            else
+                return false;
+            return false;
+        }
+    
+    public void listSortedtBook (ArrayList<Books> array, String choice){
+        // this variable loads the user choice to be used in the compareStringBooks function. 
+        this.choice= choice;
+        // call the funciont to start sorting the ArrayList. First to split then to merge.
         splitArray(array);
-       for (Books book : array){
-            System.out.printf("Title: %40.40s %10s  %2.30s  %n",book.getTitle(),"Author:",book.getAuthor() );
+        // print sorted array alphabetically by Title or Author
+        if (choice.equals("Title")){
+            for (Books book : array){
+                 System.out.printf("%s %-80.80s %10s %-50.50s %10s %s %n","Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
+             }
+        }
+        else if (choice.equals("Author")) {
+            for (Books book : array){
+                System.out.printf("%s %-50.50s %10s %-80.80s %10s %s %n","Author:",book.getAuthor(),"Title:",book.getTitle(),"Year: ", book.getYear());
+            }
         }
     }
-        
+    
+    // method used in mergeSort function to return a integer when comparing Strings or from Titles or from Authors;
+    private int compareStringBooks( ArrayList<Books> arrayA, int countA, ArrayList<Books> arrayB, int countB ){
+        if (choice.equals("Title")){
+            return (arrayA.get(countA).getTitle().compareToIgnoreCase(arrayB.get(countB).getTitle()));
+        }
+        else if (choice.equals("Author")){
+            return (arrayA.get(countA).getAuthor().compareToIgnoreCase(arrayB.get(countB).getAuthor()));
+        }   
+        return 0;
+    }    
             
     public void splitArray(ArrayList<Books> array){
         
@@ -81,41 +126,39 @@ public class SortSearch {
 
             // call a function that is going to compare strings and merge the arrays
             mergeSort(firstArray, secondArray, array);
-            
-            
         }
     }
     
+    // Method to merge arrayA and arrayB, that were split from the main arrayList using recursive.
     private void mergeSort(ArrayList<Books> arrayA, ArrayList<Books> arrayB, ArrayList<Books> arrayS){
-        
+        //variables used in the process to merge arrayA and arratB to arrayS
         int countA = 0;
         int countB = 0;
         int countS = 0;
-        
-        
+        // this loop continues while the counters vaulues are lower than their arrays size.
+        // then compares strings to sorte alphabetically
         while (countA < arrayA.size() && countB < arrayB.size()){
-          
-            if (arrayA.get(countA).getTitle().compareToIgnoreCase(arrayB.get(countB).getTitle())<0){
+            //call a method that allows to compare string from or titles or authors.
+            //System.out.println("arrayA: "+arrayA.get(countA).getTitle()+"  arrayB: "+arrayB.get(countB).getTitle()); 
+            if (compareStringBooks(arrayA, countA, arrayB, countB)<0){
                 arrayS.set(countS,arrayA.get(countA));
                 countA ++;
-                
             }
             else{
                 arrayS.set(countS,arrayB.get(countB));
                 countB ++;
             }
+            //System.out.println("ArrayS "+arrayS.get(countS).getTitle()+ "  counterS: "+countS);
             countS ++;
         }
         
         while (countA < arrayA.size()){
             arrayS.set(countS, arrayA.get(countA));
-            
             countA ++;
             countS ++; 
         }
         while (countB < arrayB.size()){
-            arrayS.set(countS, arrayB.get(countB));
-            
+            arrayS.set(countS, arrayB.get(countB));          
             countB ++;
             countS ++; 
         }

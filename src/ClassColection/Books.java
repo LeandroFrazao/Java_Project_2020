@@ -36,6 +36,22 @@ public class Books {
     public String getAuthor() {
         return author;
     }
+
+    public String getYear() {
+        return year;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
     
     // create toString contaning all variables
     @Override
