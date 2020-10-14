@@ -23,13 +23,14 @@ public class SortSearch {
         //splitArray(array);
        boolean found=false;
         for (Books book : array){
-            if (book.getTitle().toLowerCase().contains(title.toLowerCase())){
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase()) && book.getAuthor().toLowerCase().contains(author.toLowerCase())){
                 found = true;
-                System.out.printf("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n","ID:",book.getId(),"Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
+                System.out.print(book);
+//System.out.printf("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n","ID:",book.getId(),"Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
             }
         }
         if (!found){        
-            System.out.println(title + " NOT FOUND");
+            System.out.println((title.isBlank()?"Author":"Title") + " NOT FOUND");
         }
         
        // System.out.println( binarySearchTitle(array, title, 0, array.size()));
@@ -78,13 +79,17 @@ public class SortSearch {
         splitArray(array);
         // print sorted array alphabetically by Title or Author
         if (choice.equals("Title")){
+          
             for (Books book : array){
-                 System.out.printf("%s %-80.80s %10s %-50.50s %10s %s %n","Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
+                System.out.print(book);
+                //System.out.printf("%s %-80.80s %10s %-50.50s %10s %s %n","Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
              }
         }
         else if (choice.equals("Author")) {
+            
             for (Books book : array){
-                System.out.printf("%s %-50.50s %10s %-80.80s %10s %s %n","Author:",book.getAuthor(),"Title:",book.getTitle(),"Year: ", book.getYear());
+                System.out.print(book);
+                //System.out.printf("%s %-50.50s %10s %-80.80s %10s %s %n","Author:",book.getAuthor(),"Title:",book.getTitle(),"Year: ", book.getYear());
             }
         }
     }
