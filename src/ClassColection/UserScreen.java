@@ -36,96 +36,123 @@ public class UserScreen {
         mainScreen();
         checkInput(this.parentOption);
     }
+    
     //This method is used as a controller 
     //that redirects to other methods/functions that represents options on the screen
+    private void checkInput(int option){
+        Scanner sc = new Scanner(System.in);
+    while (sc.hasNextLine() && choice!=9){
+        String input ="";
+            try{
+                choice = Integer.parseInt(sc.nextLine());
+                if (choice == 9){
+                    break;
+                }
+                else if (choice!=0 && choice !=5 ){ //These options are, respectively, to return to main Screen and return to previous screen when applicable.  
+                    option= (this.option*10 + choice);// It gets the last valid option of the screen then multiply by 10 and sum with the option that the user has chosen,
+                    controller(option); //then, it calls  controller function to print the screen chosen.
+                }
+                else {// When in main screen, it redirects user choice to controller function
+                    option = choice;
+                    controller (option);
+                }
+            }
+            catch (NumberFormatException ex){
+                if ( input.isBlank()){
+                    System.out.print(" -- Empty --\n");
+                }
+                option =9999;// this error is treated in the controller function
+                controller(option);
+            }
+            if (invalid){// if invalid is true, it gonna call the controler with a valid option
+                invalid= false; // because the error is treated, invalid becomes false.
+                controller(this.option);
+            }
+        }
+    } 
     public void controller(int option){    
      
         switch (option){
-            case 0:
+            case 0: //main Screen
                 this.option = 0;
                 this.parentOption =0;
                 mainScreen();               
                 break;
-                
-            case 1:
-                //book Screen
+            case 1://book Screen
                 this.option = option;  // preserve the last valid option, and it is used to treat errors
                 this.parentOption =0; // Set the parent of book screen, and it is used to treat errors
                 bookScreen();
                 break;
-            case 11:
-                //Search book Screen
+            case 11://Search book Screen
                 this.option = option; // preserve the last valid option, and it is used to treat errors
                 this.parentOption =1;  // Set the parent of searchBook screen, To return to Book Screen if User type invalid input   
                 searchBookScreen(option);
                 break;
-            case 111:
-                // Search Book by title/author  again
+            case 111:// Search Book by title/author  again
                 searchBookScreen(option);
                 break;           
-            case 12:
-                // Sort book by title Screen
+            case 12: // Sort book by title Screen
                 this.option = option; // preserve the last valid option, and it is used to treat errors
                 this.parentOption =1;//// Set the parent sortBook screen, To return to Book Screen if User type invalid input   
                 //this.option = option;  
                 sortBookScreen(option, "Title");  
                 break;          
-            case 13:
-                // Sort book by author Screen
+            case 13:// Sort book by author Screen
                 this.option = option; // preserve the last valid option, and it is used to treat errors
                 this.parentOption =1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
-                //this.option = option;
                 sortBookScreen(option, "Author");  
                 break;  
-            case 2:
-                // Readers Screen
+            case 2:// Readers Screen
                 this.option = option;
                 this.parentOption =0;
                 readersScreen();
                 break;              
-            case 21:
-                // Search reader by Name/surname Screen
+            case 21: // Search reader by Name/surname Screen
                 this.option = option;
                 this.parentOption =2;  
-                searchReader(option, "Name");  
+                searchReaderScreen(option, "Name");  
                 break; 
-            case 211:
-                // Search Reader by name/surname  again
-                searchReader(option, "Name");
+            case 211:// Search Reader by name/surname  again
+                searchReaderScreen(option, "Name");
                 break;
-            case 22:
-                // Search reader by Name/surname Screen
+            case 22: // Search reader by ID
                 this.option = option;
                 this.parentOption =2;  
-                searchReader(option, "ID");  
+                searchReaderScreen(option, "ID");  
                 break; 
-            case 5:
-                //return to parent screen, but it gives error message when there is no option 5 available on screen
+            case 221:// Search Reader by ID  again
+                searchReaderScreen(option, "ID");
+                break;
+            case 23: //List all Readers (Ascendent Name)
+                this.option = option;
+                this.parentOption =2;  
+                sortReaderScreen(option, "Name");  
+                break;
+            case 24: // List all Readers (Ascendent ID)
+                this.option = option;
+                this.parentOption =2;  
+                sortReaderScreen(option, "ID");  
+                break; 
+            case 5://return to parent screen, but it gives error message when there is no option 5 available on screen
                 if (this.option >4){
                     this.option =  this.parentOption;              
                 }
                 else 
                     System.out.println("-- Invalid Option --"); 
                 invalid = true;  // this variable defines if the controller function needs to be executed again after this function ends.
-
                 break;
             case 9:
                 break;
             default:
                 invalid = true; // this variable defines if the controller function needs to be executed again after this function ends.
                 System.out.println("--- Invalid Option ---");
-                 //if user enter invalid option, this message informs that the screen goes
-                // to one layer above,until reach the main screen. 
-                if (this.option !=this.parentOption && this.option >4){   
-                    this.option = this.parentOption;
+                if (this.option !=this.parentOption && this.option >4){ //if user enter invalid option, this message informs that the screen goes
+                    this.option = this.parentOption; // to one layer above,until reach the main screen. 
                     System.out.println("--- Returning to Previous Screen ---");
                 }
-                
                 break;
         }
-    
     }
-    
 
     // main screen where user chooses options
     private void mainScreen(){
@@ -172,7 +199,7 @@ public class UserScreen {
                 author = ( author.isBlank()? author.trim() : author); 
                 
                 System.out.println("-- Searching in progress --");
-                System.out.println("Result:");
+                System.out.printf("%50.50s %n","-- Result --\n");
                 // call the sortSearch function to search or Author or Title or both, according to the user decision.
                 sortSearch.searchBook( title, author);
                 
@@ -195,18 +222,17 @@ public class UserScreen {
         
         System.out.println("\n( " + String.valueOf(option).charAt(0)+"."+String.valueOf(option).charAt(1) + " ) -Sort Book by " +target+"\n");
         System.out.println("-- Sorting in Progress --");  
-        System.out.printf("%50.50s %n","-- Result --");
+        System.out.printf("%50.50s %n","-- Result --\n");
         sortSearch.listSortedtBook(target);
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
-        
     }
     
     private void readersScreen(){
         System.out.println("\n( 2 ) Readers Screen:\n");
         System.out.println("Select one of the options bellow:\n");
-        System.out.println("1 - Search a Reader by Name");
+        System.out.println("1 - Search a Reader by Name and/or Surname");
         System.out.println("2 - Search a Reader by ID");
         System.out.println("3 - List all Readers (Ascendent Name)");
         System.out.println("4 - List all Readers (Ascendent ID)");
@@ -215,11 +241,11 @@ public class UserScreen {
    
     }
     //search Reader Screen
-    private void searchReader(int option, String target){
+    private void searchReaderScreen(int option, String target){
         System.out.println("\n( " + String.valueOf(option).charAt(0)+"."+String.valueOf(option).charAt(1) + " ) Search Reader by "+target+"\n");
         Scanner sc = new Scanner(System.in);
         String firstName ="", lastName="";
-        Integer id = null;
+        Integer id = 0;
         if (target.equals("Name")){
             System.out.println("Enter the First Name:");
             firstName = sc.nextLine();
@@ -244,7 +270,7 @@ public class UserScreen {
             lastName = ( lastName.isBlank()? lastName.trim() : lastName); 
 
             System.out.println("-- Searching in progress --");
-            System.out.println("Result:");
+           System.out.printf("%50.50s %n","-- Result --\n");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
             sortSearch.searchReader(firstName, lastName, id, target);
 
@@ -262,52 +288,15 @@ public class UserScreen {
      
     }
     
-    
-    private void checkInput(int option){
-        Scanner sc = new Scanner(System.in);
-    while (sc.hasNextLine() && choice!=9){
-        String input ="";
-       
-       /*if (sc.hasNextLine()){          
-             input=  
-        }    */
-            try{
-                choice = Integer.parseInt(sc.nextLine());
-               
-                if (choice == 9){
-                    break;
-                }
-       // if option is !=0 means that user has already chosen an option from Main Screen. 
-       // So this algorithm gets the option of the screen the user is multiply by 10 and sum with the option that the user has chosen,
-       //then, it calls  controller function to print the screen chosen.
-                else if (choice!=0 && choice !=5 && !invalid ){
-                    option= (this.option*10 + choice);
-                    
-                    controller(option);
-                }
-                // When in main screen, it redirects user choice to controller function
-                else {
-                    option = choice;
-                    controller (option);
-                }
-               //break;
-            }
-            catch (NumberFormatException ex){
-                if ( input.isBlank()){
-                    System.out.print(" -- Empty --\n");
-                }
-                // this error is treated in the controller function
-                option =9999;
-                controller(option);
-       
-            }
-            // if invalid is true, it gonna call the controler with a valid option
-            if (invalid){
-                invalid= false; // because the error is treated, invalid becomes false.
-                controller(this.option);
-            }
-        }
-    } 
-}
-    
-    
+     // Sort Book Screen 
+    private void sortReaderScreen(int option, String target){
+        
+        System.out.println("\n( " + String.valueOf(option).charAt(0)+"."+String.valueOf(option).charAt(1) + " ) -Sort Reader by " +target+"\n");
+        System.out.println("-- Sorting in Progress --");  
+        System.out.printf("%50.50s %n","-- Result --");
+        sortSearch.listSortedtReader(target);
+        System.out.println("\n0 - Return to Main Screen");
+        System.out.println("5 - Return to Books Screen");
+        System.out.println("9 - Exit");
+    }
+}   
