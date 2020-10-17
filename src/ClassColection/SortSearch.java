@@ -6,7 +6,6 @@
 package ClassColection;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  *
@@ -17,31 +16,133 @@ public class SortSearch {
     private String choice ="";
     // used to count possible dublicates when a target is searched
     private static int countMatchRight =0, countMatchLeft=0;
-     
-    public void searchBook (ArrayList<Books> array, String title, String author){
-        //this.choice = "Title";
-        //splitArray(array);
+    
+    private ArrayList <Books> books ;
+    private ArrayList <Readers> readers ;
+    private final ReadWriteFile readWrite;
+
+    //constructor - Load books and readers variables
+    public SortSearch() {
+        // create an object of the class ReadWriterFile
+        this.readWrite = new ReadWriteFile();
+        
+         // call method to load "books" data from the file
+        this.books = readWrite.readBooks(books); 
+        // call method to load "readers" data from the file
+        this.readers = readWrite.readReaders(readers);
+    }
+    
+    
+    public void searchBook ( String title, String author){
        boolean found=false;
-        for (Books book : array){
+        for (Books book : books){
             if (book.getTitle().toLowerCase().contains(title.toLowerCase()) && book.getAuthor().toLowerCase().contains(author.toLowerCase())){
                 found = true;
                 System.out.print(book);
-//System.out.printf("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n","ID:",book.getId(),"Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
             }
         }
         if (!found){        
             System.out.println((title.isBlank()?"Author":"Title") + " NOT FOUND");
         }
-        
-       // System.out.println( binarySearchTitle(array, title, 0, array.size()));
-        
-        
+    }
+    
+    public void searchReader (String firstName, String lastName, int id, String option){
+        if (option.equals("Name")){
+            searchReaderName(appendName(firstName, lastName));
+        }
+        else
+            binarySearchId(readers, id, 0, readers.size());
+    }
+    
+    //function to append firstName and lastName, and return a string
+    private String appendName(String firstName, String lastName){
+       // System.out.println(firstName + " " + lastName);
+        return firstName + " " + lastName;
+    }
+    
+    //function to search user by Name or/and surname
+    private void searchReaderName(String target ){
+         boolean found=false;
+        for (Readers reader : readers){
+            if ( appendName(reader.getFirstName(),reader.getSurname()).toLowerCase().contains(target.toLowerCase())){
+                found = true;
+                System.out.print(reader);
+            }
+        }
+        if (!found){        
+            System.out.println("READER NOT FOUND");
+     }
+    }
+    
+    private  boolean binarySearchName (ArrayList<Readers> array, String target, int low, int high){
+         if (low < high){
+                int mid = (low + high)/2;
+                if ( appendName(readers.get(mid).getFirstName(),readers.get(mid).getSurname()).toLowerCase().contains(target.toLowerCase())){
+                    countMatchLeft = mid;
+                    countMatchRight= mid;
+                    while (countMatchLeft -1 > low && appendName(readers.get(countMatchLeft).getFirstName(), readers.get(countMatchLeft).getSurname()).toLowerCase().contains(target.toLowerCase())){
+                        countMatchLeft --;
+                    }
+                    while (countMatchRight +1 < high && appendName(readers.get(countMatchRight).getFirstName(), readers.get(countMatchRight).getSurname()).toLowerCase().contains(target.toLowerCase())){
+                         countMatchRight ++;
+                    }
+                    for (int i=countMatchLeft+1; i<= countMatchRight-1; ++i ){
+                        System.out.println(readers.get(i).getFirstName());
+                    }
+                    return true;
+                }
+                else if (appendName(readers.get(mid).getFirstName(),readers.get(mid).getSurname()).toLowerCase().compareToIgnoreCase(target)>0){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchName(readers, target, low, mid -1);
+                }
+                else if (appendName(readers.get(mid).getFirstName(),readers.get(mid).getSurname()).toLowerCase().compareToIgnoreCase(target)<0){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchName(readers, target, mid+1, high);
+                }
+       
+            }
+            else
+                return false;
+            return false;
+    }
+    
+   
+    
+    private  boolean binarySearchId (ArrayList<Readers> array, int target, int low, int high){
+         if (low < high){
+                int mid = (low + high)/2;
+                if (readers.get(mid).getId()==target){
+                    countMatchLeft = mid;
+                    countMatchRight= mid;
+                    while (countMatchLeft -1 > low && readers.get(countMatchLeft).getId() == target){
+                        countMatchLeft --;
+                    }
+                    while (countMatchRight +1 < high && readers.get(countMatchRight).getId() == target){
+                         countMatchRight ++;
+                    }
+                    for (int i=countMatchLeft+1; i<= countMatchRight-1; ++i ){
+                        System.out.println(readers.get(i).getFirstName());
+                    }
+                    return true;
+                }
+                else if (readers.get(mid).getId() > target){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchId(readers, target, low, mid -1);
+                }
+                else if (readers.get(mid).getId() < target){
+                    //System.out.println(array.get(mid).getTitle());
+                    return binarySearchId(readers, target, mid+1, high);
+                }
+       
+            }
+            else
+                return false;
+            return false;
     }
     
     private static boolean binarySearchTitle(ArrayList<Books> array, String target, int low, int high){
             
             if (low < high){
-            
                 int mid = (low + high)/2;
                 if (array.get(mid).getTitle().toLowerCase().contains(target.toLowerCase())){
                     countMatchLeft = mid;
@@ -72,25 +173,24 @@ public class SortSearch {
             return false;
         }
     
-    public void listSortedtBook (ArrayList<Books> array, String choice){
+    public void listSortedtBook ( String choice){
+        
         // this variable loads the user choice to be used in the compareStringBooks function. 
         this.choice= choice;
         // call the funciont to start sorting the ArrayList. First to split then to merge.
-        splitArray(array);
+        splitStringArray(books);
         // print sorted array alphabetically by Title or Author
         if (choice.equals("Title")){
           
-            for (Books book : array){
+            for (Books book : books){
                 System.out.print(book);
-                //System.out.printf("%s %-80.80s %10s %-50.50s %10s %s %n","Title:",book.getTitle(),"Author:",book.getAuthor(),"Year:", book.getYear() );
              }
         }
         else if (choice.equals("Author")) {
             
-            for (Books book : array){
+            for (Books book : books){
                 System.out.print(book);
-                //System.out.printf("%s %-50.50s %10s %-80.80s %10s %s %n","Author:",book.getAuthor(),"Title:",book.getTitle(),"Year: ", book.getYear());
-            }
+               }
         }
     }
     
@@ -105,7 +205,7 @@ public class SortSearch {
         return 0;
     }    
             
-    public void splitArray(ArrayList<Books> array){
+    private void splitStringArray(ArrayList<Books> array){
         
        //this block split the the main array in two recursively.
         if (array.size() >1){
@@ -126,16 +226,16 @@ public class SortSearch {
                secondArray.add(i, array.get(i+sizeFirst));
             }
             // call the methods again until it is not possible to split the main array.
-            splitArray(firstArray);
-            splitArray(secondArray);
+            splitStringArray(firstArray);
+            splitStringArray(secondArray);
 
             // call a function that is going to compare strings and merge the arrays
-            mergeSort(firstArray, secondArray, array);
+            mergeSortString(firstArray, secondArray, array);
         }
     }
     
     // Method to merge arrayA and arrayB, that were split from the main arrayList using recursive.
-    private void mergeSort(ArrayList<Books> arrayA, ArrayList<Books> arrayB, ArrayList<Books> arrayS){
+    private void mergeSortString(ArrayList<Books> arrayA, ArrayList<Books> arrayB, ArrayList<Books> arrayS){
         //variables used in the process to merge arrayA and arratB to arrayS
         int countA = 0;
         int countB = 0;

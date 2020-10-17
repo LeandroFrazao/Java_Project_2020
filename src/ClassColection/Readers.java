@@ -115,12 +115,13 @@ public class Readers {
     public void setCountry(String country) {
         this.country = country;
     }
-   
   
-    // create toString contaning all variables
+     // create toString contaning all variables
     @Override
     public String toString() {
-        return "Readers{" + "id: " + id + ", First Name: " + firstName + ", Surname: " + surname + ", Email: " + email + ", Gender: " + gender + ", Phone: " + phone + ", Address: " + address + ", Town: " + town + ", Country: " + country + '}';
+        
+        return String.format("%s %-10s %s %-15.15s %10s %-15.15s %10s %-30.30s %5s %s %8s %s %10s %-20.20s %8s %-15.15s %8s %s %n","ID:", getId(),"Name:",firstName,"Surname:",surname,"Email:", email, "Gender:", gender , "Phone:" ,phone ,"Address:" , address , "Town:" , town , "Country:" , country) ;
     }
+
     
 }
