@@ -32,7 +32,6 @@ public class SortSearch {
         this.readers = readWrite.readReaders(readers);
     }
     
-    
     public void searchBook ( String title, String author){
        boolean found=false;
         for (Books book : books){
@@ -117,7 +116,6 @@ public class SortSearch {
                     //System.out.println(array.get(mid).getTitle());
                     return binarySearchId(readers, target, mid+1, high);
                 }
-       
             }
             else
                 return false;
