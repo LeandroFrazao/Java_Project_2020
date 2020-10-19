@@ -59,11 +59,7 @@ public class Books {
         
         return String.format("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n","ID:", getId(),"Title:",getTitle(),"Author:",getAuthor(),"Year:", getYear()) ;
     }
-    
-    
-    
-    
-  
+ 
   }
 
 

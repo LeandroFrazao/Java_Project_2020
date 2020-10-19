@@ -17,26 +17,20 @@ import java.util.ArrayList;
 public  class ReadWriteFile {
     
     
-    public ArrayList  readReaders(ArrayList array) {
+    public ArrayList<Readers>  readReaders(ArrayList<Readers> array) {
               
         return readFile("readers.csv", array );
     }
-    public  ArrayList  readBooks(ArrayList<Books> array) {
+    public  ArrayList<Books>  readBooks(ArrayList<Books> array) {
 
         return readFile("books.csv", array );
-    }
+    }   
     
-    public  ArrayList  readFiles(ArrayList<Readers> array) {
-           
-        return readFile("readers.csv", array ); 
-    }
-    
-  
-    private ArrayList readFile(String file, ArrayList array)  {
+    //open and read readers and books files, and return an ArrayList of books and readers
+    private ArrayList readFile(String file, ArrayList<?> array)  {
                 
         BufferedReader br;
         try { 
-            
             FileReader fr = new FileReader(file);
             br = new BufferedReader(fr);
 
