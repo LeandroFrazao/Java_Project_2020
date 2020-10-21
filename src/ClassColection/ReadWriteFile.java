@@ -52,8 +52,19 @@ public  class ReadWriteFile {
         }
         else if (file.equals("borrows.csv")){
             
-            String strBooks = data[2].replace(" ", ", "); 
-            Borrows bw = new Borrows(Integer.parseInt(data[0]),data[1],strBooks);
+            String[] strBooks = data[2].split(" ");
+            Integer[] booksId = new Integer[strBooks.length]; // creating an array with the size of IDs the user entered.
+            int i =0;   
+            for (String id : strBooks){
+                try{ 
+                    booksId[i] =Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
+                    i++;
+                }
+                catch (NumberFormatException ex){
+                    System.out.println("Error");
+                }
+            }
+            Borrows bw = new Borrows(Integer.parseInt(data[0]),data[1],booksId,"");
             borrows.add(bw); 
             return borrows;
         }

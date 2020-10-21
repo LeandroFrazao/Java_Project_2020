@@ -15,14 +15,16 @@ public class Borrows {
     // defining variables
     private int id;
     private int readerId;
-    private String dateTime;
-    private String booksId;
+    private String borrowDateTime;
+    private String returnDateTime;
+    private Integer[] booksId;
     private static int count=0;
     
-    public Borrows(int authorId, String dateTime, String booksId) {
-        this.readerId = authorId;
-        this.dateTime = dateTime;
+    public Borrows(int readerId, String borrowDateTime, Integer[] booksId, String returnDateTime) {
+        this.readerId = readerId;
+        this.borrowDateTime = borrowDateTime;
         this.booksId = booksId;
+        this.returnDateTime = returnDateTime;
         this.id = count;
         count++;
     }
@@ -35,17 +37,32 @@ public class Borrows {
         return readerId;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getBorrowDateTime() {
+        return borrowDateTime;
     }
 
-    public String getBooksId() {
+    public Integer[] getBooksId() {
+               
         return booksId;
     }
-
+    
+    public String printBooksId() {
+        String booksID =Arrays.toString(booksId);
+        return booksID.substring(1, booksID.length()-1); // to remove []
+    }
+    public String getReturnDateTime() {
+        return returnDateTime;
+    }
+    public String listBorrowingID(){
+        return String.format("%s %-30.30s %s %s %n","Borrowed Books ID(s):",printBooksId(), "Borrowing Date:",getBorrowDateTime()) ;
+    }
+    public String listBorrowingReturn(){
+        return String.format("%s %-10s %s %-30.30s %s %s %s %s %n","Reader ID:", getReaderId(),"Borrowed Books ID(s):",printBooksId(), "Returning Date",getReturnDateTime(),"Borrowing Date:",getBorrowDateTime()) ;
+    }
+    
     @Override
     public String toString() {
-        return String.format("%s %-10s %s %-40.40s %10s %15s %n","Reader ID:", getReaderId(),"Books ID:",getBooksId(),"Date:",getDateTime()) ;
+        return String.format("%s %-10s %s %-30.30s %10s %s %n","Reader ID:", getReaderId(),"Borrowed Books ID(s):",printBooksId(),"Borrowing Date:",getBorrowDateTime()) ;
     }
     
     
