@@ -15,150 +15,148 @@ import java.util.List;
  * @author Leand
  */
 public class SortSearch {
+
     //This variable carries choice made by the user.
     private String choice;
     // used to count possible dublicates when a target is searched
     //private static int countMatchRight =0, countMatchLeft=0;
-    
-    private ArrayList <Books> books ;
-    private ArrayList <Readers> readers ;
-    private ArrayList <Borrows> borrows;
+
+    private ArrayList<Books> books;
+    private ArrayList<Readers> readers;
+    public ArrayList<Borrows> borrows;
     private final ReadWriteFile readWrite;
     private String bookSortedBy = "ID"; // this variable is used to check if Books array is already sorted by ID, Title or Author. Books Author file is already sorted by ID.  
     private String readerSortedBy = "";// this variable is used to check if Readers array is already sorted by ID or Name . Readers Array file is NOT sorted.  
     //constructor - Load books and readers variables
+
     public SortSearch() {
         // create an object of the class ReadWriterFile
         this.readWrite = new ReadWriteFile();
-         // call method to load "books" data from the file
-        this.books = readWrite.readBooks(books); 
+        // call method to load "books" data from the file
+        this.books = readWrite.readBooks(books);
         // call method to load "readers" data from the file
         this.readers = readWrite.readReaders(readers);
         // call method to load "borrows" data from the file
-        this.borrows = readWrite.readBorrows(borrows);  
+        this.borrows = readWrite.readBorrows(borrows);
         //setting choice to be empty
         this.choice = "";
     }
-    
+
     // Function to SEARCH BOOK by Title or Author
-    public void  searchBook ( String title, String author){
-        
-        boolean found=false;
-        for (Books book : books){
-            if (book.getTitle().toLowerCase().contains(title.toLowerCase()) && book.getAuthor().toLowerCase().contains(author.toLowerCase())){
+    public void searchBook(String title, String author) {
+
+        boolean found = false;
+        for (Books book : books) {
+            if (book.getTitle().toLowerCase().contains(title.toLowerCase()) && book.getAuthor().toLowerCase().contains(author.toLowerCase())) {
                 found = true;
                 System.out.print(book);
             }
         }
-        if (!found){        
-            System.out.println((title.isBlank()?"--- AUTHOR":"--- TITLE") + " NOT FOUND ---");
+        if (!found) {
+            System.out.println((title.isBlank() ? "--- AUTHOR" : "--- TITLE") + " NOT FOUND ---");
         }
     }
-    
+
     // Function that calls SearchReaderName if user chooses to search by NAME or it calls binarySearch ID if user chooses to search by ID
-    public void searchReader (String firstName, String lastName, int id, String option){
-        
-        if (option.equals("Name")){ //if user decided to sort by Name
+    public void searchReader(String firstName, String lastName, int id, String option) {
+
+        if (option.equals("Name")) { //if user decided to sort by Name
             searchReaderName(joinName(firstName, lastName)); // it calls a function that sort Readers by Name
-        }
-        else if(option.equals("ID")){ //if user decided to sort by ID 
+        } else if (option.equals("ID")) { //if user decided to sort by ID 
             checkAndSort("readers");//function to check if an array is already sorted by some type
             if (!binarySearchAuthorId(readers, id, 0, readers.size())) // if function return false. means that ID wasnt found.
+            {
                 System.out.println("--- ID NOT FOUND ---");
             }
-    }           
-    
+        }
+    }
+
     //function to join firstName and lastName, and return a string
-    private String joinName(String firstName, String lastName){
-      
+    private String joinName(String firstName, String lastName) {
+
         return firstName + " " + lastName;
     }
-    
+
     //function to search user by Name or/and surname
-    private void searchReaderName(String target ){
-        
-        boolean found=false;
-        for (Readers reader : readers){ // this algorithm can search fragments of Names in the Readers array using the method "Contains". joinname function is used to join firstName and lastName in a string.
-            if ( joinName(reader.getFirstName(),reader.getSurname()).toLowerCase().contains(target.toLowerCase())){//each Name from readers array is Lower Case to compare to targets also Lower Case
+    private void searchReaderName(String target) {
+
+        boolean found = false;
+        for (Readers reader : readers) { // this algorithm can search fragments of Names in the Readers array using the method "Contains". joinname function is used to join firstName and lastName in a string.
+            if (joinName(reader.getFirstName(), reader.getSurname()).toLowerCase().contains(target.toLowerCase())) {//each Name from readers array is Lower Case to compare to targets also Lower Case
                 found = true;
                 System.out.print(reader);
             }
         }
-        if (!found){        
+        if (!found) {
             System.out.println("--- NAME NOT FOUND ---");
-     }
+        }
     }
-    
-    public void listSortedtReader ( String choice){
 
-        this.choice= choice;// this variable loads the user choice to be used in the compareReader function. 
+    public void listSortedtReader(String choice) {
+
+        this.choice = choice;// this variable loads the user choice to be used in the compareReader function. 
         checkAndSort("readers");
 
-        if (choice.equals("Name")){// print sorted array alphabetically by Name
-            for (Readers reader : readers){
+        if (choice.equals("Name")) {// print sorted array alphabetically by Name
+            for (Readers reader : readers) {
                 System.out.print(reader);
-             }
-        }
-        else if (choice.equals("ID")) {// print sorted array alphabetically by ID
-            for (Readers reader : readers){
+            }
+        } else if (choice.equals("ID")) {// print sorted array alphabetically by ID
+            for (Readers reader : readers) {
                 System.out.print(reader);
-               }
+            }
         }
     }
+
     // recursive way to search an ID using Binary algorithm
-    private  boolean binarySearchAuthorId (ArrayList<Readers> array, int target, int low, int high){
-        
-        int mid = (low + high)/2; 
-        if (low <= high && mid <readers.size()){// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug) 
-            if (readers.get(mid).getId()==target){
-                    System.out.print(readers.get(mid));
+    private boolean binarySearchAuthorId(ArrayList<Readers> array, int target, int low, int high) {
+
+        int mid = (low + high) / 2;
+        if (low <= high && mid < readers.size()) {// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug) 
+            if (readers.get(mid).getId() == target) {
+                System.out.print(readers.get(mid));
                 return true;
-            }
-            else if (readers.get(mid).getId() > target){
+            } else if (readers.get(mid).getId() > target) {
                 //System.out.println(array.get(mid).getTitle());
-                return binarySearchAuthorId(readers, target, low, mid -1);
-            }
-            else if (readers.get(mid).getId() < target){
+                return binarySearchAuthorId(readers, target, low, mid - 1);
+            } else if (readers.get(mid).getId() < target) {
                 //System.out.println(array.get(mid).getTitle());
-                return binarySearchAuthorId(readers, target, mid+1, high);
+                return binarySearchAuthorId(readers, target, mid + 1, high);
             }
-        }
-        else
+        } else {
             return false;
+        }
         return false;
     }
-    
+
     // method used in mergeSort function to return a integer when comparing Strings or from Names+Surname or from ID;
-    private int compareReaders( ArrayList<Readers> arrayA, int countA, ArrayList<Readers> arrayB, int countB ){
-        
-        if (choice.equals("Name")){  //It calls the joinName function to join name and last name that user entered, and compare to the joining of first name and last name in the array. 
-            return (joinName(arrayA.get(countA).getFirstName(),arrayA.get(countA).getSurname()).compareToIgnoreCase(joinName(arrayB.get(countB).getFirstName(),arrayB.get(countB).getSurname())));
+    private int compareReaders(ArrayList<Readers> arrayA, int countA, ArrayList<Readers> arrayB, int countB) {
+
+        if (choice.equals("Name")) {  //It calls the joinName function to join name and last name that user entered, and compare to the joining of first name and last name in the array. 
+            return (joinName(arrayA.get(countA).getFirstName(), arrayA.get(countA).getSurname()).compareToIgnoreCase(joinName(arrayB.get(countB).getFirstName(), arrayB.get(countB).getSurname())));
+        } else if (choice.equals("ID")) { // using  ternary operator, if Array A == Array B is true, it returns 0,  if Array A < Array B is true, it returns -1. else 1. 
+            return ((arrayA.get(countA).getId() == arrayB.get(countB).getId()) ? 0 : arrayA.get(countA).getId() < arrayB.get(countB).getId() ? -1 : 1);
         }
-        else if (choice.equals("ID")){ // using  ternary operator, if Array A == Array B is true, it returns 0,  if Array A < Array B is true, it returns -1. else 1. 
-            return ((arrayA.get(countA).getId()==arrayB.get(countB).getId())? 0 :arrayA.get(countA).getId()<arrayB.get(countB).getId()? -1 : 1 );
-        }   
         return 0;
     }
 
-    private void splitReaderArray(ArrayList<Readers> array){
-        
-       //this block split the the main array in two recursively.
-        if (array.size() >1){
-            
-            int sizeFirst = array.size()/2;   // this variable set the size of the firstArray
-            int sizeSecond = array.size()-sizeFirst; // this variable set the size of the secondArray
+    private void splitReaderArray(ArrayList<Readers> array) {
+
+        //this block split the the main array in two recursively.
+        if (array.size() > 1) {
+
+            int sizeFirst = array.size() / 2;   // this variable set the size of the firstArray
+            int sizeSecond = array.size() - sizeFirst; // this variable set the size of the secondArray
             ArrayList<Readers> firstArray = new ArrayList<>();
             ArrayList<Readers> secondArray = new ArrayList<>();
-            
+
             // this loop add elements to firstArray from the main array. 
-            for (int i = 0; i < sizeFirst; i++)
-            {
-                firstArray.add(i,  array.get(i));
+            for (int i = 0; i < sizeFirst; i++) {
+                firstArray.add(i, array.get(i));
             }
             // this loop add elements to secondArray.
-            for (int i =0; i < sizeSecond; i++)
-            {
-               secondArray.add(i, array.get(i+sizeFirst));
+            for (int i = 0; i < sizeSecond; i++) {
+                secondArray.add(i, array.get(i + sizeFirst));
             }
             // call the methods again until it is not possible to split the main array.
             splitReaderArray(firstArray);
@@ -168,90 +166,85 @@ public class SortSearch {
             mergeSortReaders(firstArray, secondArray, array);
         }
     }
-    
-    private void mergeSortReaders(ArrayList<Readers> arrayA, ArrayList<Readers> arrayB, ArrayList<Readers> arrayS){
+
+    private void mergeSortReaders(ArrayList<Readers> arrayA, ArrayList<Readers> arrayB, ArrayList<Readers> arrayS) {
         //variables used in the process to merge arrayA and arratB to arrayS
         int countA = 0;
         int countB = 0;
         int countS = 0;
         // this loop continues while the counters vaulues are lower than their arrays size.
         // then compares strings to sort alphabetically
-        while (countA < arrayA.size() && countB < arrayB.size()){
+        while (countA < arrayA.size() && countB < arrayB.size()) {
             //call a method that allows to compare string from or titles or authors.
-            if (compareReaders(arrayA, countA, arrayB, countB)<0){
-                arrayS.set(countS,arrayA.get(countA));
-                countA ++;
+            if (compareReaders(arrayA, countA, arrayB, countB) < 0) {
+                arrayS.set(countS, arrayA.get(countA));
+                countA++;
+            } else {
+                arrayS.set(countS, arrayB.get(countB));
+                countB++;
             }
-            else{
-                arrayS.set(countS,arrayB.get(countB));
-                countB ++;
-            }
-            countS ++;
+            countS++;
         }
-        
-        while (countA < arrayA.size()){
+
+        while (countA < arrayA.size()) {
             arrayS.set(countS, arrayA.get(countA));
-            countA ++;
-            countS ++; 
+            countA++;
+            countS++;
         }
-        while (countB < arrayB.size()){
-            arrayS.set(countS, arrayB.get(countB));          
-            countB ++;
-            countS ++; 
+        while (countB < arrayB.size()) {
+            arrayS.set(countS, arrayB.get(countB));
+            countB++;
+            countS++;
         }
-        
+
     }
-     // LIST on SCREEN SORTED BOOKS by TITLE, AUTHOR or ID        
-     public void listSortedtBook ( String choice){
-        this.choice= choice;// this variable loads the user choice to be used in the compareStringBooks function. 
+    // LIST on SCREEN SORTED BOOKS by TITLE, AUTHOR or ID        
+
+    public void listSortedtBook(String choice) {
+        this.choice = choice;// this variable loads the user choice to be used in the compareStringBooks function. 
         checkAndSort("books");//function to check if an array is already sorted by some type
-          
-        if (choice.equals("Title")){ // print sorted array alphabetically by Title 
-          
-            for (Books book : books){
+
+        if (choice.equals("Title")) { // print sorted array alphabetically by Title 
+
+            for (Books book : books) {
                 System.out.print(book);
-             }
-        }
-        else if (choice.equals("Author")) {// print sorted array alphabetically by Author
-            for (Books book : books){
+            }
+        } else if (choice.equals("Author")) {// print sorted array alphabetically by Author
+            for (Books book : books) {
                 System.out.print(book);
-               }
+            }
         }
     }
-     
+
     // method used in mergeSort function to return a integer when comparing Strings or from Titles or from Authors;
-    private int compareStringBooks( ArrayList<Books> arrayA, int countA, ArrayList<Books> arrayB, int countB ){
-        if (choice.equals("Title")){
+    private int compareStringBooks(ArrayList<Books> arrayA, int countA, ArrayList<Books> arrayB, int countB) {
+        if (choice.equals("Title")) {
             return (arrayA.get(countA).getTitle().compareToIgnoreCase(arrayB.get(countB).getTitle()));
-        }
-        else if (choice.equals("Author")){
+        } else if (choice.equals("Author")) {
             return (arrayA.get(countA).getAuthor().compareToIgnoreCase(arrayB.get(countB).getAuthor()));
+        } else if (choice.equals("ID")) { // using  ternary operator, if Array A == Array B is true, it returns 0,  if Array A < Array B is true, it returns -1. else 1. 
+            return ((arrayA.get(countA).getId() == arrayB.get(countB).getId()) ? 0 : arrayA.get(countA).getId() < arrayB.get(countB).getId() ? -1 : 1);
         }
-        else if (choice.equals("ID")){ // using  ternary operator, if Array A == Array B is true, it returns 0,  if Array A < Array B is true, it returns -1. else 1. 
-            return ((arrayA.get(countA).getId()==arrayB.get(countB).getId())? 0 :arrayA.get(countA).getId()<arrayB.get(countB).getId()? -1 : 1 );
-        }   
         return 0;
     }
-    
-    private void splitBookArray(ArrayList<Books> array){
-        
-       //this block split the the main array in two recursively.
-        if (array.size() >1){
-            
-            int sizeFirst = array.size()/2;   // this variable set the size of the firstArray
-            int sizeSecond = array.size()-sizeFirst; // this variable set the size of the secondArray
+
+    private void splitBookArray(ArrayList<Books> array) {
+
+        //this block split the the main array in two recursively.
+        if (array.size() > 1) {
+
+            int sizeFirst = array.size() / 2;   // this variable set the size of the firstArray
+            int sizeSecond = array.size() - sizeFirst; // this variable set the size of the secondArray
             ArrayList<Books> firstArray = new ArrayList<>();
             ArrayList<Books> secondArray = new ArrayList<>();
-            
+
             // this loop add elements to firstArray from the main array. 
-            for (int i = 0; i < sizeFirst; i++)
-            {
-                firstArray.add(i,  array.get(i));
+            for (int i = 0; i < sizeFirst; i++) {
+                firstArray.add(i, array.get(i));
             }
             // this loop add elements to secondArray.
-            for (int i =0; i < sizeSecond; i++)
-            {
-               secondArray.add(i, array.get(i+sizeFirst));
+            for (int i = 0; i < sizeSecond; i++) {
+                secondArray.add(i, array.get(i + sizeFirst));
             }
             // call the methods again until it is not possible to split the main array.
             splitBookArray(firstArray);
@@ -261,272 +254,360 @@ public class SortSearch {
             mergeSortBooks(firstArray, secondArray, array);
         }
     }
-    
-    
+
     // Method to merge arrayA and arrayB, that were split from the main arrayList using recursive.
-    private void mergeSortBooks(ArrayList<Books> arrayA, ArrayList<Books> arrayB, ArrayList<Books> arrayS){
+    private void mergeSortBooks(ArrayList<Books> arrayA, ArrayList<Books> arrayB, ArrayList<Books> arrayS) {
         //variables used in the process to merge arrayA and arratB to arrayS
         int countA = 0;
         int countB = 0;
         int countS = 0;
         // this loop continues while the counters vaulues are lower than their arrays size.
         // then compares strings to sort alphabetically
-        while (countA < arrayA.size() && countB < arrayB.size()){
+        while (countA < arrayA.size() && countB < arrayB.size()) {
             //call a method that allows to compare string from or titles or authors.
             //System.out.println("arrayA: "+arrayA.get(countA).getTitle()+"  arrayB: "+arrayB.get(countB).getTitle()); 
-            if (compareStringBooks(arrayA, countA, arrayB, countB)<0){
-                arrayS.set(countS,arrayA.get(countA));
-                countA ++;
-            }
-            else{
-                arrayS.set(countS,arrayB.get(countB));
-                countB ++;
+            if (compareStringBooks(arrayA, countA, arrayB, countB) < 0) {
+                arrayS.set(countS, arrayA.get(countA));
+                countA++;
+            } else {
+                arrayS.set(countS, arrayB.get(countB));
+                countB++;
             }
             //System.out.println("ArrayS "+arrayS.get(countS).getTitle()+ "  counterS: "+countS);
-            countS ++;
+            countS++;
         }
-        
-        while (countA < arrayA.size()){
+
+        while (countA < arrayA.size()) {
             arrayS.set(countS, arrayA.get(countA));
-            countA ++;
-            countS ++; 
+            countA++;
+            countS++;
         }
-        while (countB < arrayB.size()){
-            arrayS.set(countS, arrayB.get(countB));          
-            countB ++;
-            countS ++; 
+        while (countB < arrayB.size()) {
+            arrayS.set(countS, arrayB.get(countB));
+            countB++;
+            countS++;
         }
     }
+
     //function to check if an array is already sorted by some type
-    private void checkAndSort(String arrayName){
-        if (arrayName.equals("books") && !this.choice.equals(bookSortedBy) ){ //it checks if the array is already sorted to avoid wasting time with unacessary sorting.
-            bookSortedBy= this.choice;//  The array will be sorted by different type 
+    private void checkAndSort(String arrayName) {
+        if (arrayName.equals("books") && !this.choice.equals(bookSortedBy)) { //it checks if the array is already sorted to avoid wasting time with unacessary sorting.
+            bookSortedBy = this.choice;//  The array will be sorted by different type 
             splitBookArray(books);// call the funciont to start sorting the ArrayList. First to split then to merge.
-        }
-        else if(arrayName.equals("readers") && !this.choice.equals(readerSortedBy)){ //it checks if the array is already sorted to avoid wasting time with unacessary sorting.
-            readerSortedBy= this.choice;//  The array will be sorted by different type 
+        } else if (arrayName.equals("readers") && !this.choice.equals(readerSortedBy)) { //it checks if the array is already sorted to avoid wasting time with unacessary sorting.
+            readerSortedBy = this.choice;//  The array will be sorted by different type 
             splitReaderArray(readers);// call the function to start sorting the ArrayList. First to split then to merge.
-        } 
+        }
     }
-    
+
     // Function to borrow a book, where it is going to check if book exists, then user need to confirm it to be register in a file.
-    public Integer[] BorrowIdBook(Integer[] ids){
-        if (ids == null){
+    public Integer[] BorrowIdBook(Integer[] ids) {
+        if (ids == null) {
             return null;
         }
         this.choice = "ID";
         checkAndSort("books");//function to check if an array is already sorted by some type
         ids = insertSort(ids); // sort selected IDs form the User and remove duplicates.
-        int counterInvalid =0;
-        String toReturnError ="";
-        for (int target: ids){
-            if (!binarySearchBooksId(books, target, 0, books.size())){
-                toReturnError += target+ ", ";
+        int counterInvalid = 0;
+        String toReturnError = "";
+        for (int target : ids) {
+            if (!binarySearchBooksId(books, target, 0, books.size())) {
+                toReturnError += target + ", ";
                 counterInvalid++;
-            }        
+            }
         }
-        if (!toReturnError.isBlank()){// check if toReturnError is empty. if not, it print error message on screen.
-            toReturnError = toReturnError.substring(0, toReturnError.length()-2);// to remove ", " from the end of the string
-            System.out.printf("%s %s %s","--- Book ID:",toReturnError,"--- NOT FOUND ---\n");
-        }    
-         // check if the last element of the array was going to be deleted 
-            //this algorithm has the purpose to remove all Not Found ids from array and reduce its lenght
-            Integer[] temp = new Integer[ids.length - counterInvalid];
-            System.arraycopy(ids, 0 , temp, 0, ids.length - counterInvalid); //copy book IDs from 0 position until last valid ID position to temp array
-            ids = new Integer[ids.length - counterInvalid];  //recreate ids array with reduced lenght
-            ids = temp;  //ids array receive data from temp array        
-        if (ids.length==0)// set null if there are no elements in the array ( lenght is 0 )
-           ids = null;
+        if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
+            toReturnError = toReturnError.substring(0, toReturnError.length() - 2);// to remove ", " from the end of the string
+            System.out.printf("%s %s %s", "--- Book ID:", toReturnError, "--- NOT FOUND ---\n");
+        }
+        // check if the last element of the array was going to be deleted 
+        //this algorithm has the purpose to remove all Not Found ids from array and reduce its lenght
+        Integer[] temp = new Integer[ids.length - counterInvalid];
+        System.arraycopy(ids, 0, temp, 0, ids.length - counterInvalid); //copy book IDs from 0 position until last valid ID position to temp array
+        ids = new Integer[ids.length - counterInvalid];  //recreate ids array with reduced lenght
+        ids = temp;  //ids array receive data from temp array        
+        if (ids.length == 0)// set null if there are no elements in the array ( lenght is 0 )
+        {
+            ids = null;
+        }
         return ids;
     }
-    
+
     // Function to borrow a book, where it is going to check if book exists, then user need to confirm it to be register in a file.
-    public boolean BorrowIdReader(Integer id){
+    public boolean BorrowIdReader(Integer id) {
         this.choice = "ID";
         checkAndSort("readers");//function to check if an array is already sorted by some type
-            if (binarySearchAuthorId(readers, id, 0, readers.size())){ // if function return true. means that ID was found.
-                return true;
-            }
-        System.out.println("--- ID NOT FOUND ---");        
-        return false;
-    }
-    
-    // Function to search Books by ID using binary seach algorithm
-    private  boolean binarySearchBooksId (ArrayList<Books> array, int target, int low, int high){
-        int mid = (low + high)/2;     
-        if (low <= high && mid < books.size()){// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug)
-            if (books.get(mid).getId()==target){
-                    System.out.print(books.get(mid));
-                return true;
-            }
-            else if (books.get(mid).getId() > target){
-                return binarySearchBooksId(books, target, low, mid -1);
-            }
-            else if (books.get(mid).getId() < target){
-                return binarySearchBooksId(books, target, mid+1, high);
-            }
+        if (binarySearchAuthorId(readers, id, 0, readers.size())) { // if function return true. means that ID was found.
+            return true;
         }
-        else
-            return false;
+        System.out.println("--- ID NOT FOUND ---");
         return false;
     }
-    
-    
+
+    // Function to search Books by ID using binary seach algorithm
+    private boolean binarySearchBooksId(ArrayList<Books> array, int target, int low, int high) {
+        int mid = (low + high) / 2;
+        if (low <= high && mid < books.size()) {// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug)
+            if (books.get(mid).getId() == target) {
+                System.out.print(books.get(mid));
+                return true;
+            } else if (books.get(mid).getId() > target) {
+                return binarySearchBooksId(books, target, low, mid - 1);
+            } else if (books.get(mid).getId() < target) {
+                return binarySearchBooksId(books, target, mid + 1, high);
+            }
+        } else {
+            return false;
+        }
+        return false;
+    }
+
     // insertionSort and delete duplicates in the array of selected IDs from the USER
-    private Integer[] insertSort(Integer[] selected){
-   
-        int countDuplicate =0;
+    private Integer[] insertSort(Integer[] selected) {
+
+        int countDuplicate = 0;
         for (int i = 1; i < selected.length; i++) {
             int key = selected[i];
             int j = i;
-            while (j > 0 &&  selected[j - 1] >= key) { // Move elements of array that are greater than key, to one position after their current position  
-                if(key == selected[j - 1]){ //compare if there are duplicates
+            while (j > 0 && selected[j - 1] >= key) { // Move elements of array that are greater than key, to one position after their current position  
+                if (key == selected[j - 1]) { //compare if there are duplicates
                     key = -1; // if there is a duplicate, key receive -1, and later is going to be sent to the first position
-                } 
+                }
                 selected[j] = selected[j - 1];
                 j--;
             }
-            if(key == -1){ // to count Duplicates
-                 countDuplicate++; 
+            if (key == -1) { // to count Duplicates
+                countDuplicate++;
             }
             selected[j] = key;
         }
         Integer[] temp = new Integer[selected.length - countDuplicate];
-        System.arraycopy(selected, countDuplicate , temp, 0, temp.length );// copy valid Integer from Selected array to temp array
+        System.arraycopy(selected, countDuplicate, temp, 0, temp.length);// copy valid Integer from Selected array to temp array
         selected = new Integer[selected.length - countDuplicate];  // reduce lenght of selected array
         selected = temp;
-        
-        return selected; 
-    }
-    
 
-   // list Borrow books 
-   public Integer[] listBorrowBooks ( String choice, int readerId){
-          
-        if (choice.equals("ALL")){ // print list of all borrowed books 
-            for (Borrows borrow : borrows){
+        return selected;
+    }
+
+    // list Borrow books 
+    public Integer[] listBorrowBooks(String choice, int readerId) {
+
+        if (choice.equals("ALL")) { // print list of all borrowed books 
+            for (Borrows borrow : borrows) {
                 System.out.print(borrow);
-             }
-        }
-        else if (choice.equals("ID")) {// // print list of borrowed books by Reader ID
-            boolean found=false;
-            for (Borrows borrow : borrows){
-                if (borrow.getReaderId()==readerId){
+            }
+        } else if (choice.equals("ID")) {// // print list of borrowed books by Reader ID
+            boolean found = false;
+            for (Borrows borrow : borrows) {
+                if (borrow.getReaderId() == readerId) {
                     found = true;
                     System.out.print(borrow.listBorrowingID());
                 }
             }
-            if (!found){        
-            System.out.println("--- Reader ID NOT FOUND ---");
+            if (!found) {
+                System.out.println("--- Reader ID NOT FOUND ---");
             }
-        }
-        else if (choice.equals("OnlyBook")) { // return valid Borrowed ID
+        } else if (choice.equals("OnlyBook")) { // return valid Borrowed ID
             String toReturnBooks = "";
-            int i =0;
-            Integer[] booksId = new Integer[10];  // variable to keep books IDs registed in the file of the user
-            for (Borrows borrow : borrows){
-                if (borrow.getReaderId()==readerId){
-                    for (int borrowBookId : borrow.getBooksId()){
-                        
-                    if (i==booksId.length){//to increasy size of the array while it finds valid books
-                        Integer[] temp = new Integer[booksId.length+1];
-                        System.arraycopy(booksId, 0, temp, 0, i);
-                        booksId = new Integer[booksId.length+1];
-                        booksId = temp;
-                    }   
-                        
+            int i = 0;
+            Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
+            for (Borrows borrow : borrows) {
+                if (borrow.getReaderId() == readerId) {
+                    for (int borrowBookId : borrow.getBooksId()) {
+
+                        if (i == booksId.length) {//to increasy size of the array while it finds valid books
+                            Integer[] temp = new Integer[booksId.length + 1];
+                            System.arraycopy(booksId, 0, temp, 0, i);
+                            booksId = new Integer[booksId.length + 1];
+                            booksId = temp;
+                        }
+
                         booksId[i] = borrowBookId;
                         i++;
                     }
                 }
             }
-             booksId = insertSort(booksId); //sort and remove duplicates
-             String temp = Arrays.toString(booksId);
-             toReturnBooks = temp.substring(1,temp.length()-1);
-             if (toReturnBooks.isBlank())
+            booksId = insertSort(booksId); //sort and remove duplicates
+            String temp = Arrays.toString(booksId);
+            toReturnBooks = temp.substring(1, temp.length() - 1);
+            if (toReturnBooks.isBlank()) {
                 toReturnBooks = "--- NO BORROWING REGISTER ---\n";
-           
-            System.out.print(toReturnBooks+"\n");       
-            
-           
-            
+            }
+
+            System.out.print(toReturnBooks + "\n");
+
             return booksId;
         }
         return null; // return null if the choice is not OnlyBook
-    } 
-    //Function used to return a list of 2 Arrays
-    private List returnValidInvalid(Integer[] valid, String invalid){    
-    return Arrays.asList(valid,invalid);
     }
+
+    // Function to check if User borrowed a book
+    public boolean ReturnIdReader(Integer id) {
+
+        for (Borrows borrow : borrows) {
+            if (borrow.getReaderId() == id) {
+                return true;
+            }
+        }
+        System.out.println("--- ID " + id + " HAS NOT BORROWED A BOOK YET ---");
+        return false;
+    }
+
+    //Function used to return a list of 2 Arrays
+    private List returnValidInvalid(Integer[] valid, String invalid) {
+        return Arrays.asList(valid, invalid);
+    }
+
     // Check valid and invalid input from the USER
     public List checkBookID(String input, String option) {
         Integer[] booksId = null;  // variable to keep books IDs chosen by the user
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
         booksId = new Integer[selectedId.length]; // creating an array with the size of IDs the user entered.
-        String toReturnInvalid =""; // variable to record invalid entries.
-        int i =0;   
-        for (String id : selectedId){
-            try{ 
-               booksId[i] =Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
-               i++;
-            }
-            catch (NumberFormatException ex){ //if user entered characters than numbers.
+        String toReturnInvalid = ""; // variable to record invalid entries.
+        int i = 0;
+        for (String id : selectedId) {
+            try {
+                booksId[i] = Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
+                i++;
+            } catch (NumberFormatException ex) { //if user entered characters than numbers.
                 Integer[] temp = new Integer[booksId.length - 1]; //temp array with lenght of booksId -1, it is going to copy booksId array
-                if (i!=0){
-                    System.arraycopy(booksId, 0 , temp, 0, i );// copy valid Integer from booksId array to temp array
+                if (i != 0) {
+                    System.arraycopy(booksId, 0, temp, 0, i);// copy valid Integer from booksId array to temp array
                 }
                 booksId = new Integer[booksId.length - 1];  // reduce lenght of booksId array
                 booksId = temp; // booksId array receive temp.
-                if (booksId.length==0)// set null if there are no elements in the array ( lenght is 0 )
+                if (booksId.length == 0)// set null if there are no elements in the array ( lenght is 0 )
+                {
                     booksId = null;
-                if (id.isBlank()){ //include empty to the string input if id is empty
+                }
+                if (id.isBlank()) { //include empty to the string input if id is empty
                     id = "EMPTY";
                 }
-                toReturnInvalid +=id +", "; // append invalid id
-            }              
-        }//check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reeduced by deleting undesirable characteres in the end of the string
-        toReturnInvalid = !toReturnInvalid.isBlank()? toReturnInvalid.substring(0,toReturnInvalid.length() -2): "";
-        if (option.equals("BORROW"))
-           booksId = BorrowIdBook(booksId); // call function that gonna sort, remove duplicates, and return valid IDs;  
-        else if (booksId!=null)
+                toReturnInvalid += id + ", "; // append invalid id
+            }
+        }//check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reduced by deleting undesirable characteres in the end of the string
+        toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid.substring(0, toReturnInvalid.length() - 2) : "";
+        if (option.equals("BORROW")) {
+            booksId = BorrowIdBook(booksId); // call function that gonna sort, remove duplicates, and return valid IDs;  
+        } else if (booksId != null) {
             booksId = insertSort(booksId);
-        
+        }
+
         return returnValidInvalid(booksId, toReturnInvalid); //used returnValidInvalid function to return list of 2 arrays.
-       }
-    
-    public Integer[] verifyingReturnId (Integer[] borrowedListId ,Integer [] booksId, Integer readerId){
-        int i =0;
-        
-       /* for (Borrows borrow : borrows){
-            for (int bookId: borrow.getBooksId()){
-                if (bookId==booksId[i]){
-                    
+    }
+
+    public ArrayList<Returns> generateListToReturn(int readerId) {
+        ArrayList<Returns> listToReturn = new ArrayList<>();
+        String toReturnBooks = "";
+        boolean valid = false; //boolean when it true, allow data to be added on ArrayList listToReturn
+        int index = 0;
+        Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
+        for (Borrows borrow : borrows) {
+            if (borrow.getReaderId() == readerId) {
+                Returns booksToReturn = new Returns(readerId, borrow.getBorrowDateTime(), borrow.getBooksId(), "ok");
+                listToReturn.add(booksToReturn);
+
+//                    for (int borrowBookId : borrow.getBooksId()){
+//                        
+//                    if (index==booksId.length){//to increasy size of the array while it finds valid books
+//                        Integer[] temp = new Integer[booksId.length+1];
+//                        System.arraycopy(booksId, 0, temp, 0, index);
+//                        booksId = new Integer[booksId.length+1];
+//                        booksId = temp;
+//                    }   
+//                      
+//                        booksId[index] = borrowBookId;
+//                        index++;
+//                        valid = true;
+//                    }
+            }
+//                if (valid){
+//                    Returns booksToReturn = new Returns(readerId,borrow.getBorrowDateTime(),booksId,"ok");
+//                    listToReturn.add(booksToReturn);
+//                    booksId = new Integer[1];
+//                    index =0;
+//                    valid = false;
+//                }
+        }
+
+//             booksId = insertSort(booksId); //sort and remove duplicates
+//             String temp = Arrays.toString(booksId);
+//             toReturnBooks = temp.substring(1,temp.length()-1);
+//             if (toReturnBooks.isBlank())
+//                toReturnBooks = "--- NO BORROWING REGISTER ---\n";
+//           
+//            System.out.print(toReturnBooks+"\n"); 
+        for (Returns retBook : listToReturn) {
+            System.out.print(retBook.printBooksId() + ", ");
+        }
+        return listToReturn;
+    }
+
+    public ArrayList<Returns> verifyingReturnId_V2(ArrayList<Returns> listToReturn, Integer[] booksId, Integer readerId) {
+        ArrayList<Returns> chosenToReturn = new ArrayList<>();
+        int booksLength = booksId.length; //number of books to be checked
+        int index = 0;
+        int indexBooksId =0;
+        Integer[] validId = new Integer[1];// array of integer starts with a minimum of one element/book
+        outer:
+        for (Returns retBook : listToReturn) {
+            for (Integer retBookId : retBook.getBooksId()) {
+                
+                    if (retBookId == booksId[indexBooksId]) {
+                        if (index == validId.length) {//to increase size of the array while it finds valid books
+                            Integer[] temp = new Integer[validId.length + 1];
+                            System.arraycopy(validId, 0, temp, 0, index);
+                            validId = new Integer[validId.length + 1];
+                            validId = temp;
+                        }
+                        booksLength--; // when the book is found and checked, it decreases 1
+                        validId[index] = booksId[indexBooksId];
+                        index++;
+                        indexBooksId++;
+                        if (booksLength == 0) {
+                            Returns booksToReturn = new Returns(readerId, retBook.getBorrowDateTime(), validId, "ok");// object store a specific borrowing from the user
+                            chosenToReturn.add(booksToReturn); //store list of borrowings that user has chosen to be returned
+                            break outer; // break the nested loop if the number of books to be found is zero.
+                        }
+                    }                   
+            }
+            Returns booksToReturn = new Returns(readerId, retBook.getBorrowDateTime(), validId, "ok"); //object store a specific borrowing from the user
+            chosenToReturn.add(booksToReturn);
+            index = 0; // reset index of validBooks
+            validId = new Integer[1];
+        }
+       
+        return chosenToReturn;
+    }
+
+    public Integer[] verifyingReturnId(Integer[] borrowedListId, Integer[] booksId, Integer readerId) {
+        int i = 0;
+        int index = 0;
+        Integer[] validId = new Integer[1];
+        for (int borrowId : borrowedListId) {
+            for (int choosenId : booksId) {
+                if (borrowId == choosenId) {
+
+                    if (index == validId.length) {//to increasy size of the array while it finds valid books
+                        Integer[] temp = new Integer[validId.length + 1];
+                        System.arraycopy(validId, 0, temp, 0, index);
+                        validId = new Integer[validId.length + 1];
+                        validId = temp;
+                    }
+                    validId[index] = choosenId;
+                    index++;
+
                 }
             }
-        }*/
-        int index =0;
-        Integer[] validId = new Integer[1];
-        for (int borrowId : borrowedListId )
-           for(int choosenId : booksId )
-            if (borrowId == choosenId){
-                
-                if (index==validId.length){//to increasy size of the array while it finds valid books
-                    Integer[] temp = new Integer[validId.length+1];
-                    System.arraycopy(validId, 0, temp, 0, index);
-                    validId = new Integer[validId.length+1];
-                    validId = temp;
-                }   
-                 validId[index]=choosenId;
-                 index++;
-                
-            }    
-             if (validId.length==0) // check if validId has lenght equal to 0, then it is set to be null.
-                 validId = null;
-        
+        }
+        if (validId.length == 0) // check if validId has lenght equal to 0, then it is set to be null.
+        {
+            validId = null;
+        }
+
         return validId;
     }
-    
-    
+
 }
 /*
 
@@ -620,8 +701,8 @@ private  boolean binarySearchName (ArrayList<Readers> array, String target, int 
 
 
 
-*/  
-/* int index = 0;
+ */
+ /* int index = 0;
                  int[] selectbook = new int[10];
                 //to increasy size of the array while it finds valid books
                 selectbook[index]=book.getId();
@@ -660,4 +741,3 @@ private  boolean binarySearchName (ArrayList<Readers> array, String target, int 
                 toReturnBooks = "--- NO BORROWING REGISTER ---\n";
            
             System.out.print(toReturnBooks+"\n"); */
-           

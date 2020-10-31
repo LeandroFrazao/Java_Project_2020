@@ -19,62 +19,61 @@ import java.util.Date;
  *
  * @author Leand
  */
-public  class ReadWriteFile {
+public class ReadWriteFile {
+
     private ArrayList<Readers> readers = new ArrayList<>();
     private ArrayList<Books> books = new ArrayList<>();
     private ArrayList<Borrows> borrows = new ArrayList<>();
-    
-    
+
     @SuppressWarnings("unchecked")  // YOU SAID I COULD USE THIS :D  (IT'S RECORDED ON MOODLE )
-    public ArrayList<Readers>  readReaders(ArrayList<Readers> array) {        
-        return readFile("readers.csv", array );
+    public ArrayList<Readers> readReaders(ArrayList<Readers> array) {
+        return readFile("readers.csv", array);
     }
+
     @SuppressWarnings("unchecked") // YOU SAID I COULD USE THIS :D  (IT'S RECORDED ON MOODLE )
-    public  ArrayList<Books>  readBooks(ArrayList<Books> array) {
-        return readFile("books.csv", array );
-    }   
+    public ArrayList<Books> readBooks(ArrayList<Books> array) {
+        return readFile("books.csv", array);
+    }
+
     @SuppressWarnings("unchecked") // YOU SAID I COULD USE THIS :D  (IT'S RECORDED ON MOODLE )
-    public  ArrayList<Borrows>  readBorrows(ArrayList<Borrows> array) {
-        return readFile("borrows.csv", array );
-    }   
-    
-    private ArrayList pickingFileToRead(String file,String[] data){
-        if (file.equals("readers.csv")){
-            Readers rd = new Readers(Integer.parseInt(data[0]),data[1],data[2],data[3],data[4].charAt(0),data[5],data[6], data[7], data[8]);
+    public ArrayList<Borrows> readBorrows(ArrayList<Borrows> array) {
+        return readFile("borrows.csv", array);
+    }
+
+    private ArrayList pickingFileToRead(String file, String[] data) {
+        if (file.equals("readers.csv")) {
+            Readers rd = new Readers(Integer.parseInt(data[0]), data[1], data[2], data[3], data[4].charAt(0), data[5], data[6], data[7], data[8]);
             //array.add(rd)
             readers.add(rd);
             return readers;
-        }
-        else if (file.equals("books.csv")){
-            Books bk = new Books(Integer.parseInt(data[0]),data[1],data[2],data[3],data[4],data[5]);
+        } else if (file.equals("books.csv")) {
+            Books bk = new Books(Integer.parseInt(data[0]), data[1], data[2], data[3], data[4], data[5]);
             books.add(bk);
             return books;
-        }
-        else if (file.equals("borrows.csv")){
-            
+        } else if (file.equals("borrows.csv")) {
+
             String[] strBooks = data[2].split(" ");
             Integer[] booksId = new Integer[strBooks.length]; // creating an array with the size of IDs the user entered.
-            int i =0;   
-            for (String id : strBooks){
-                try{ 
-                    booksId[i] =Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
+            int i = 0;
+            for (String id : strBooks) {
+                try {
+                    booksId[i] = Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
                     i++;
-                }
-                catch (NumberFormatException ex){
+                } catch (NumberFormatException ex) {
                     System.out.println("Error");
                 }
             }
-            Borrows bw = new Borrows(Integer.parseInt(data[0]),data[1],booksId,"");
-            borrows.add(bw); 
+            Borrows bw = new Borrows(Integer.parseInt(data[0]), data[1], booksId, "");
+            borrows.add(bw);
             return borrows;
         }
         return null;
     }
-    
+
     //open and read readers and books files, and return an ArrayList of books and readers
-    private ArrayList readFile(String file, ArrayList array)  {         
+    private ArrayList readFile(String file, ArrayList array) {
         BufferedReader br;
-        try { 
+        try {
             FileReader fr = new FileReader(file);
             br = new BufferedReader(fr);
 
@@ -82,52 +81,57 @@ public  class ReadWriteFile {
             br.readLine();
             String line;
             line = br.readLine();
-            
-            if (file.equals("readers.csv")){
+
+            if (file.equals("readers.csv")) {
                 array = new ArrayList<Readers>(); // Convert generic array to ArrayList<Readers>
-            }
-            else if(file.equals("books.csv")){
+            } else if (file.equals("books.csv")) {
                 array = new ArrayList<Books>(); // Convert generic array to ArrayList<Books>
-            }
-            else if(file.equals("borrows.csv")){
+            } else if (file.equals("borrows.csv")) {
                 array = new ArrayList<Borrows>(); // Convert generic array to ArrayList<Borrows>
             }
-            while ( line != null ){
-                    String[] data = line.split(",");
-                    array=pickingFileToRead(file, data); // call a function that returns data from a specific file.
-                    line = br.readLine();
-                }
+            while (line != null) {
+                String[] data = line.split(",");
+                array = pickingFileToRead(file, data); // call a function that returns data from a specific file.
+                line = br.readLine();
+            }
             br.close();
             fr.close();
             return array;
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
         }
-        catch (IOException e){
-             System.out.println("Error: "+e);
-        }
-             
-        return null ;
-    } 
+
+        return null;
+    }
+
     // Save Borrows to File 
-    public void SaveBorrow(Integer readerId, Integer[] booksId){
-        
-        File file = new File("Borrows.csv"); 
+    public void SaveBorrow(Integer readerId, Integer[] booksId) {
+
+        File file = new File("Borrows.csv");
+        FileReader fr =null;
         FileWriter fw = null;
         BufferedWriter bw = null;
-        BufferedReader br;
+        BufferedReader br =null;
         SimpleDateFormat formateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        
-        String dataLine = readerId.toString()+","+formateTime.format(new Date())+",";
-        for (int book: booksId)
-            dataLine +=book+" " ;
-        dataLine = dataLine.trim()+"\n"; // remove blank space from the end of the line
+
+        String dataLine = readerId.toString() + "," + formateTime.format(new Date()) + ",";
+        for (int book : booksId) {
+            dataLine += book + " ";
+        }
+        dataLine = dataLine.trim() + "\n"; // remove blank space from the end of the line
         
         try {
-            FileReader fr = new FileReader(file);
+            if (!file.exists()) {
+                fw = new FileWriter(file);
+            } else {
+                fw = new FileWriter(file, true);
+            }
+            fr = new FileReader(file);
+
             br = new BufferedReader(fr);
-            
-            fw = new FileWriter(file, true);
+
             bw = new BufferedWriter(fw);
-            if (!br.ready()){ //it checks if the file is empty
+            if (!br.ready()) { //it checks if the file is empty
                 bw.write("ReaderID, Date/time, Books ID\n"); //if it is empty, it add the header
             }
             bw.write(dataLine);
@@ -135,12 +139,56 @@ public  class ReadWriteFile {
             br.close();
             fr.close();
             fw.close();
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
         }
-        catch (IOException e){
-             System.out.println("Error: "+e);  
-        }    
+    }
+
+    public void SaveReturn(ArrayList<Returns> toReturnBook) {
+
+        File file = new File("Returns.csv");
+        FileReader fr =null;
+        FileWriter fw = null;
+        BufferedWriter bw = null;
+        BufferedReader br =null;
+        SimpleDateFormat formateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+        String returnDate = formateTime.format(new Date());
+
+        //dataLine +=
+        // dataLine = dataLine.trim()+"\n"; // remove blank space from the end of the line
+        try {
+            if (!file.exists()) {
+                fw = new FileWriter(file);
+            } else {
+                fw = new FileWriter(file, true);
+            }
+            fr = new FileReader(file);
+
+            br = new BufferedReader(fr);
+
+            bw = new BufferedWriter(fw);
+            if (!br.ready()) { //it checks if the file is empty
+                bw.write("ReaderID, Borrowing Date/Time, Books ID, Returning Date/Time \n"); //if it is empty, it add the header
+            }
+            for (Returns retBook : toReturnBook) {
+                retBook.setReturnDateTime(returnDate);
+                System.out.println(retBook.printBooksId());
+                System.out.println(retBook.toSaveToFile());
+                bw.write(retBook.toSaveToFile() + "\n");
+            }
+
+            bw.close();
+            br.close();
+            fr.close();
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
         }
-    
+    }
+
+     public void updateBorrow(ArrayList<Returns> toReturnBook) {
+
 }
 
 /*
