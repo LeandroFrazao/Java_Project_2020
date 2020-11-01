@@ -482,7 +482,7 @@ public class UserScreen {
 
                 if (booksId != null) {
                     //booksId = sortSearch.verifyingReturnId (borrowedListId, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
-                    toReturnBook = sortSearch.verifyingReturnId_V2(toReturnBook, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
+                    toReturnBook = sortSearch.verifyingReturnId(toReturnBook, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
                     String toPrint = Arrays.toString(booksId); // join the elements of String Array in one String
                     toPrint = toPrint.substring(1, toPrint.length() - 1); // to remove [ ] from the string
                     System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Returning Book ID(s):", toPrint , " ---\n");
@@ -492,7 +492,7 @@ public class UserScreen {
 
                     if (input.equalsIgnoreCase("Y")) {
                         ReadWriteFile rw = new ReadWriteFile();
-                        rw.SaveReturn(toReturnBook);
+                        sortSearch.addObjectToArray(null, rw.SaveReturn(toReturnBook), "Return"); // Calls a function to save new returnins to data file, and also calls an function to add new data to Returns ArrayList
                         System.out.println("-- RETURNING was RECORDED --");
                     } else {
                         System.out.println("--- CANCELED by USER ---");
@@ -515,7 +515,7 @@ public class UserScreen {
     private void listReturnsScreen(int option, String target) {
         Scanner sc = new Scanner(System.in);
         int readerId = 0;
-        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) List " + (target.equals("ID") ? "Returning By Reader ID" : "ALL Borrows") + "\n");
+        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) List " + (target.equals("ID") ? "Returning By Reader ID" : "ALL Returnings") + "\n");
         if (target.equals("ID")) { // only execute next block if the target is ID
             System.out.println("Enter the Reader ID:");
             try {
@@ -526,12 +526,12 @@ public class UserScreen {
                 System.out.println("--- ID INVALID ---\n");
             }
             if (readerId != -1) {
-                sortSearch.listReturnBooks(target, readerId); // list borrowings
+                sortSearch.listReturnBooks(target, readerId); // list returnings of an Id reader
             } else {
                 System.out.println("--- ID CANNOT BE BLANK ---");
             }
         } else if (target.equals("ALL")) {
-            sortSearch.listReturnBooks(target, readerId); // list borrowings
+            sortSearch.listReturnBooks(target, readerId); // list all returning
         }
         System.out.println("\n0 - Return to Main Screen");
         System.out.print(target.equals("ID") ? "1 - Consult another Reader\n" : "");

@@ -412,34 +412,26 @@ public class SortSearch {
     }
 
     // Function to check if User borrowed a book
-    public boolean ReturnIdReader(Integer id) {
-        this.choice = "Borrow"; // this variable loads the user choice to be used in the compareIDBorrowReturn function. 
-        if (binarySearchBorrowReturnId(borrows, id, 0, borrows.size())) {
-            return true;
+    public boolean ReturnIdReader(Integer readerId) {
+        for (Borrows borrow : borrows) {
+            if (borrow.getReaderId() == readerId) {
+                return true;
+            }
         }
-        System.out.println("--- ID " + id + " HAS NOT BORROWED A BOOK YET ---");
+        System.out.println("--- ID " + readerId + " HAS NOT BORROWED A BOOK YET ---");
         return false;
     }
 
-    private int compareIDBorrowReturn(int mid, int low, int high) {
-        if (choice.equals("Borrow")) {
-            return (borrows.get(mid).getReaderId());
-        } else if (choice.equals("Return")) {
-            return (returns.get(mid).getReaderId());
-        }
-        return 0;
-    }
-
     // Function to search Books by ID using binary seach algorithm
-    private boolean binarySearchBorrowReturnId(ArrayList array, int target, int low, int high) {
+    private boolean binarySearchBorrowReturnId(ArrayList<Borrows> array, int target, int low, int high) {
         int mid = (low + high) / 2;
         if (low <= high && mid < array.size()) {// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug)
-            if (compareIDBorrowReturn(mid, low, high) == target) {
+            if (array.get(mid).getReaderId() == target) {
                 // System.out.print(array.get(mid));
                 return true;
-            } else if (compareIDBorrowReturn(mid, low, high) > target) {
+            } else if (array.get(mid).getReaderId() > target) {
                 return binarySearchBorrowReturnId(array, target, low, mid - 1);
-            } else if (compareIDBorrowReturn(mid, low, high) < target) {
+            } else if (array.get(mid).getReaderId() < target) {
                 return binarySearchBorrowReturnId(array, target, mid + 1, high);
             }
         } else {
@@ -481,12 +473,13 @@ public class SortSearch {
                 toReturnInvalid += id + ", "; // append invalid id
             }
         }
-//check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reduced by deleting undesirable characteres in the end of the string
+        //check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reduced by deleting undesirable characteres in the end of the string
         toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid.substring(0, toReturnInvalid.length() - 2) : "";
         if (option.equals("BORROW")) {
             booksId = BorrowIdBook(booksId); // call function that gonna sort, remove duplicates, and return valid IDs;  
         } else if (booksId != null) {
-            booksId = insertSort(booksId);
+           booksId = BorrowIdBook(booksId); // call function that gonna sort, remove duplicates, and return valid IDs;  
+          // booksId = insertSort(booksId);
         }
 
         return returnValidInvalid(booksId, toReturnInvalid); //used returnValidInvalid function to return list of 2 arrays.
@@ -539,8 +532,7 @@ public class SortSearch {
 //        }
 //        return listToReturn;
 //    }
-
-    public ArrayList<Returns> verifyingReturnId_V2(ArrayList<Returns> listToReturn, Integer[] booksId, Integer readerId) {
+    public ArrayList<Returns> verifyingReturnId(ArrayList<Returns> listToReturn, Integer[] booksId, Integer readerId) {
         ArrayList<Returns> chosenToReturn = new ArrayList<>();
         int booksLength = booksId.length; //number of books to be checked
         int index = 0;
@@ -567,10 +559,12 @@ public class SortSearch {
                     }
                 }
             }
-            Returns booksToReturn = new Returns(readerId, retBook.getBorrowDateTime(), validId, "ok"); //object store a specific borrowing from the user
-            chosenToReturn.add(booksToReturn);
-            index = 0; // reset index of validBooks
-            validId = new Integer[1];
+            if (validId[index] != null) {
+                Returns booksToReturn = new Returns(readerId, retBook.getBorrowDateTime(), validId, "ok"); //object store a specific borrowing from the user
+                chosenToReturn.add(booksToReturn);
+                index = 0; // reset index of validBooks
+                validId = new Integer[1];
+            }
         }
 
         return chosenToReturn;
@@ -623,7 +617,15 @@ public class SortSearch {
         }
         return null; // return null if the choice is not OnlyBook
     }
+public void addObjectToArray( ArrayList<Borrows> borrows, ArrayList<Returns> returnList, String target){
+    if (target.equals("Borrow")){
+        
+    }else if (target.equals("Return")){
+        for (Returns retBook: returnList)
+            returns.add(retBook);
+    }
 
+}
 }
 /*
 

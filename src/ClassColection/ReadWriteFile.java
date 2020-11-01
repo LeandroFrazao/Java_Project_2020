@@ -129,7 +129,6 @@ public class ReadWriteFile {
         SimpleDateFormat formateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         String dataLine = readerId.toString() + "," + formateTime.format(new Date()) + ",";
-        
         for (int book : booksId) {
             dataLine += book + " ";
         }
@@ -159,7 +158,7 @@ public class ReadWriteFile {
         }
     }
 
-    public void SaveReturn(ArrayList<Returns> toReturnBook) {
+    public ArrayList<Returns> SaveReturn(ArrayList<Returns> toReturnBook) {
 
         File file = new File("returns.csv");
         FileReader fr;
@@ -193,6 +192,7 @@ public class ReadWriteFile {
         } catch (IOException e) {
             System.out.println("Error: " + e);
         }
+        return returns;
     }
 
     public void updateBorrow(ArrayList<Returns> toReturnBook) {
