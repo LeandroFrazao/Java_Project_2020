@@ -167,18 +167,23 @@ public class UserScreen {
             case 41:// Returning Book Screen
                 this.option = option;
                 this.parentOption = 4;
-                returningBookScreen("OnlyBook");
+                returningBookScreen();
                 break;
             case 411:// Returning Screen  again
-                returningBookScreen("OnlyBook");
+                returningBookScreen();
                 break;
             case 42:// List Returning Book by Reader ID Screen
                 this.option = option;
                 this.parentOption = 4;
-                //listBorrowsScreen(option, "ID");
+                listReturnsScreen(option, "ID");
                 break;
-            case 421:// List all Returning Book by Reader Screen
-                //listBorrowsScreen(option, "ID");
+            case 421:// List Returning Books by Reader Screen
+                listReturnsScreen(option, "ID");
+                break;
+            case 43:// List all Returning Books Screen
+                this.option = option;
+                this.parentOption = 4;
+                listReturnsScreen(option, "ALL");
                 break;
             case 5://return to parent screen, but it gives error message when there is no option 5 available on screen
                 if (this.option > 4) {
@@ -445,7 +450,7 @@ public class UserScreen {
     }
 
     // Returning Book Screen
-    private void returningBookScreen(String target) {
+    private void returningBookScreen() {
 
         Scanner sc = new Scanner(System.in);
         String input = "";
@@ -460,10 +465,10 @@ public class UserScreen {
             System.out.println("--- ID INVALID ---\n");
         }
         if (readerId != null && readerId > 0) {
-            if (sortSearch.ReturnIdReader(readerId)) { // call function check id reader is valid returning True
+            if (sortSearch.ReturnIdReader(readerId)) { // call function check there is the id reader in the borrow array
                 System.out.println("-- List of Borrowed BOOK ID(s) --");
-                Integer[] borrowedListId = sortSearch.listBorrowBooks(target, readerId);  // call function to join all the borrow book IDs from a specific user and return a integer array
-                ArrayList<Returns> toReturnBook = sortSearch.generateListToReturn(readerId);
+                ArrayList<Returns> toReturnBook = sortSearch.listBorrowBooksToReturn(readerId);  // call function to join all the borrow book IDs from a specific user and return a integer array
+               // ArrayList<Returns> toReturnBook = sortSearch.generateListToReturn(readerId);
                 System.out.println("\nEnter the Book ID to RETURN: <Enter more than one ID separated by empty space>");
                 input = sc.nextLine();
                 List list = sortSearch.checkBookID(input, "RETURN");// check user input and return an array wiht valid book ids and invalid input
@@ -476,7 +481,7 @@ public class UserScreen {
                 }
 
                 if (booksId != null) {
-                    booksId = sortSearch.verifyingReturnId (borrowedListId, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
+                    //booksId = sortSearch.verifyingReturnId (borrowedListId, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
                     toReturnBook = sortSearch.verifyingReturnId_V2(toReturnBook, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
                     String toPrint = Arrays.toString(booksId); // join the elements of String Array in one String
                     toPrint = toPrint.substring(1, toPrint.length() - 1); // to remove [ ] from the string
@@ -504,6 +509,38 @@ public class UserScreen {
         System.out.println("5 - Return to Returning Screen");
         System.out.println("9 - Exit");
     }
+    
+    
+    // List Returns Screen 
+    private void listReturnsScreen(int option, String target) {
+        Scanner sc = new Scanner(System.in);
+        int readerId = 0;
+        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) List " + (target.equals("ID") ? "Returning By Reader ID" : "ALL Borrows") + "\n");
+        if (target.equals("ID")) { // only execute next block if the target is ID
+            System.out.println("Enter the Reader ID:");
+            try {
+                String input = sc.nextLine();
+                readerId = (!input.isBlank() ? Integer.parseInt(input) : -1); // if input is blank, id = -1, then it's not null anymore, and will show a different error message to the user
+                System.out.printf("%20s %n", "-- Reader ID: " + input + " --");
+            } catch (NumberFormatException ex) {
+                System.out.println("--- ID INVALID ---\n");
+            }
+            if (readerId != -1) {
+                sortSearch.listReturnBooks(target, readerId); // list borrowings
+            } else {
+                System.out.println("--- ID CANNOT BE BLANK ---");
+            }
+        } else if (target.equals("ALL")) {
+            sortSearch.listReturnBooks(target, readerId); // list borrowings
+        }
+        System.out.println("\n0 - Return to Main Screen");
+        System.out.print(target.equals("ID") ? "1 - Consult another Reader\n" : "");
+        System.out.println("5 - Return to Returning Screen");
+        System.out.println("9 - Exit");
+    }
+    
+    
+    
 }
 
 

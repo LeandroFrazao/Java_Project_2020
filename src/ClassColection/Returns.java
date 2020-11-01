@@ -56,17 +56,19 @@ public class Returns {
     public void setReturnDateTime(String returnDateTime) {
         this.returnDateTime = returnDateTime;
     }
-    
+    public String listReturningID() {
+        return String.format("%s %-30.30s %s %s %s %s %n", "Returning Books ID(s):", printBooksId(), "Borrowing Date:", getBorrowDateTime(),  "Returning Date",getReturnDateTime());
+    }
     public String printBooksId() {
         String booksID =Arrays.toString(booksId);
         return booksID.substring(1, booksID.length()-1); // to remove []
     }
     public String toSaveToFile(){
-        return  String.format(getReaderId()+","+getReturnDateTime()+","+ printBooksId().replace(",", " ")+","+getBorrowDateTime()) ;
+        return  String.format(getReaderId()+","+getReturnDateTime()+","+ printBooksId().replace(",", "")+","+getBorrowDateTime()) ;
    
 }
     @Override
     public String toString() {
-        return String.format("%s %-10s %s %-30.30s %s %s %s %s %n","Reader ID:", getReaderId(),"Borrowed Books ID(s):",printBooksId(), "Returning Date",getReturnDateTime(),"Borrowing Date:",getBorrowDateTime()) ;
+        return String.format("%s %-10s %s %-30.30s %s %s %s %s %n","Reader ID:", getReaderId(),"Borrowed Books ID(s):",printBooksId() ,"Borrowing Date:",getBorrowDateTime(), "Returning Date",getReturnDateTime()) ;
     }
 }

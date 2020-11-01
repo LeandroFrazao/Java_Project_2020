@@ -10,7 +10,7 @@ package ClassColection;
  * @author Leand
  */
 public class Readers {
-   
+
     // defining variables
     private int id;
     private String firstName;
@@ -21,10 +21,8 @@ public class Readers {
     private String address;
     private String town;
     private String country;
-   
 
     // constructor
-    
     public Readers(int id, String firstName, String surname, String email, char gender, String phone, String adress, String town, String country) {
         this.id = id;
         this.firstName = firstName;
@@ -39,11 +37,10 @@ public class Readers {
     }
 
     Readers() {
-       
+
     }
 
     // creating getter and setter for all variables
-    
     public int getId() {
         return id;
     }
@@ -115,13 +112,11 @@ public class Readers {
     public void setCountry(String country) {
         this.country = country;
     }
-  
-     // create toString contaning all variables
+
+    // create toString contaning all variables
     @Override
     public String toString() {
-        
-        return String.format("%s %-10s %s %-15.15s %10s %-15.15s %10s %-30.30s %5s %s %8s %s %10s %-20.20s %8s %-15.15s %8s %s %n","ID:", getId(),"Name:",firstName,"Surname:",surname,"Email:", email, "Gender:", gender , "Phone:" ,phone ,"Address:" , address , "Town:" , town , "Country:" , country) ;
+        return String.format("%s %-10s %s %-15.15s %10s %-15.15s %10s %-30.30s %5s %s %8s %s %10s %-20.20s %8s %-15.15s %8s %s %n", "ID:", getId(), "Name:", firstName, "Surname:", surname, "Email:", email, "Gender:", gender, "Phone:", phone, "Address:", address, "Town:", town, "Country:", country);
     }
 
-    
 }
