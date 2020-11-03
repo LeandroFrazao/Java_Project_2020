@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,18 +60,19 @@ public class ReadWriteFile {
             books.add(bk);
             return books;
         } else {
-
-            String[] strBooks = data[2].split(" ");
             try {
-                int[] temp = Arrays.asList(strBooks).stream().mapToInt(Integer::parseInt).toArray(); //first using stream property, the String array is converted to int array 
-                Integer[] booksId = IntStream.of(temp).boxed().toArray(Integer[]::new); // then, using the function IntStream, the int array is converted to Integer array.          
                 if (file.equals("borrows.csv")) {
-                    Borrows bw = new Borrows(Integer.parseInt(data[0]), data[1], booksId, "");
-                    borrows.add(bw);
+                    //readers file is sorted already
+                    int idReader = SortSearch.binarySearchAuthorId(readers, Integer.parseInt(data[0]), 0, readers.size());
+                    int idBook = SortSearch.binarySearchBooksId(books, Integer.parseInt(data[1]), 0, books.size());
+                    Borrows borrow = new Borrows(readers.get(idReader), books.get(idBook), data[2], "");
+                    borrows.add(borrow);
                     return borrows;
                 } else if (file.equals("returns.csv")) {
-                    Returns bw = new Returns(Integer.parseInt(data[0]), data[1], booksId, data[3]);
-                    returns.add(bw);
+                    int idReader = SortSearch.binarySearchAuthorId(readers, Integer.parseInt(data[0]), 0, readers.size());
+                    int idBook = SortSearch.binarySearchBooksId(books, Integer.parseInt(data[1]), 0, books.size());
+                    Returns retBook = new Returns(readers.get(idReader), books.get(idBook), data[2], data[3]);
+                    returns.add(retBook);
                     return returns;
                 }
             } catch (Exception ex) {
@@ -119,36 +121,36 @@ public class ReadWriteFile {
     }
 
     // Save Borrows to File 
-    public void SaveBorrow(Integer readerId, Integer[] booksId) {
+    public ArrayList<Borrows> SaveBorrow(Readers reader, ArrayList<Books> booksArray) {
 
         File file = new File("borrows.csv");
-        FileReader fr ;
-        FileWriter fw ;
+        FileReader fr;
+        FileWriter fw;
         BufferedWriter bw;
-        BufferedReader br ;
+        BufferedReader br;
         SimpleDateFormat formateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
-        String dataLine = readerId.toString() + "," + formateTime.format(new Date()) + ",";
-        for (int book : booksId) {
-            dataLine += book + " ";
+        for (Books book : booksArray) {
+            Borrows borrow = new Borrows(reader, book, formateTime.format(new Date()), "");
+            borrows.add(borrow); // create an object that will be used to "print" the format desired to the file.
         }
-        dataLine = dataLine.trim() + "\n"; // remove blank space from the end of the line
+        //borrows borrow = new Borrows(readerId, formateTime.format(new Date()), booksId, "");
 
         try {
-            if (!file.exists()) {
-                fw = new FileWriter(file);
+            if (!file.exists()) { // if file doesnt exist 
+                fw = new FileWriter(file); // create a file.
             } else {
-                fw = new FileWriter(file, true);
+                fw = new FileWriter(file, true); //to allow to append data into the file
             }
             fr = new FileReader(file);
-
-            br = new BufferedReader(fr);
-
-            bw = new BufferedWriter(fw);
+            br = new BufferedReader(fr); //to be used to read the file
+            bw = new BufferedWriter(fw); // to be used to write to file
             if (!br.ready()) { //it checks if the file is empty
                 bw.write("ReaderID, Date/time, Books ID\n"); //if it is empty, it add the header
             }
-            bw.write(dataLine);
+            for (Borrows borrow : borrows) {
+                bw.write(borrow.toSaveToFile() + "\n");
+            }
+            //    bw.write(borrow.toSaveToFile());
             bw.close();
             br.close();
             fr.close();
@@ -156,13 +158,14 @@ public class ReadWriteFile {
         } catch (IOException e) {
             System.out.println("Error: " + e);
         }
+        return borrows;
     }
 
-    public ArrayList<Returns> SaveReturn(ArrayList<Returns> toReturnBook) {
+    public ArrayList<Returns> SaveReturn(ArrayList<Borrows> toReturnBook) {
 
         File file = new File("returns.csv");
         FileReader fr;
-        FileWriter fw ;
+        FileWriter fw;
         BufferedWriter bw;
         BufferedReader br;
         SimpleDateFormat formateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -178,10 +181,10 @@ public class ReadWriteFile {
             br = new BufferedReader(fr);
             bw = new BufferedWriter(fw);
             if (!br.ready()) { //it checks if the file is empty
-                bw.write("ReaderID, Borrowing Date/Time, Books ID, Returning Date/Time \n"); //if it is empty, it add the header
+                bw.write("ReaderID, Borrowing Date/Time, Returning Date/Time, Books ID \n"); //if it is empty, it add the header
             }
-            for (Returns retBook : toReturnBook) {
-                retBook.setReturnDateTime(returnDate);
+            for (Borrows borrow : toReturnBook) {
+                Returns retBook = new Returns(borrow.getReader(),borrow.getBook(),borrow.getBorrowDateTime(), returnDate);
                 returns.add(retBook);
                 bw.write(retBook.toSaveToFile() + "\n");
             }
@@ -195,7 +198,57 @@ public class ReadWriteFile {
         return returns;
     }
 
-    public void updateBorrow(ArrayList<Returns> toReturnBook) {
+    public ArrayList<Borrows> updateBorrow(ArrayList<Returns> toReturnBook) {
+        File file = new File("borrows.csv");
+        FileWriter fw;
+        BufferedWriter bw;
+        BufferedReader br;
+
+        try {
+            FileReader fr = new FileReader(file);
+            br = new BufferedReader(fr);
+            fw = new FileWriter(file, true);
+            bw = new BufferedWriter(fw);
+            PrintWriter writer = new PrintWriter(file, "UTF-8");
+            // first line is Head, so it can go to the next line.
+            br.readLine();
+            String line;
+            line = br.readLine();
+            int index = 0;
+            while (line != null) {
+                String[] data = line.split(",");
+
+                if (index == 7) {
+                    line = line.replace(line, "poora");
+                    writer.println(line);
+//writer.println(toReturnBook.get(0).getTempBorrow().toSaveToFile());
+                }
+//                for (Returns retBook : toReturnBook) {
+//                    if (retBook.getborrowId() == index) {
+//                        borrows.add(retBook.getTempBorrow());
+//                        bw.write(retBook.getTempBorrow().toSaveToFile() + "\n");
+//                        line = br.readLine();
+//                    }
+//
+//                }
+//                if (toReturnBook.get(index).getTempBorrow().getId() == index && data[0].equals(toReturnBook.get(index).getTempBorrow().getReaderId())) {
+//                    borrows.add(toReturnBook.get(index).getTempBorrow());
+//                    bw.write(toReturnBook.get(index).getTempBorrow().toSaveToFile() + "\n");
+//
+//                }
+                index++;
+                line = br.readLine();
+            }
+            bw.close();
+            br.close();
+            fr.close();
+            fw.close();
+
+        } catch (IOException e) {
+            System.out.println("Error: " + e);
+        }
+
+        return borrows;
     }
 }
 

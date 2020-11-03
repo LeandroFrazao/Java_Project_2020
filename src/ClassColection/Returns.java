@@ -12,30 +12,49 @@ import java.util.Arrays;
  * @author Leand
  */
 public class Returns {
+
     // defining variables
-    private int id;
-    private int readerId;
+     private Readers reader;
+     private Books book;
     private String borrowDateTime;
     private Integer[] booksId;
     private String returnDateTime;
-    private static int count=0;
+    private Borrows tempBorrow;
 
-    public Returns(int readerId, String borrowDateTime, Integer[] booksId, String returnDateTime) {
-        this.readerId = readerId;
+    public Returns(Readers reader,  Books book,String borrowDateTime, String returnDateTime) {
+        this.reader = reader;
         this.borrowDateTime = borrowDateTime;
         this.returnDateTime = returnDateTime;
-        this.booksId = booksId;
-        this.id = count ;
-        count++;
+        this.book = book;
+      
     }
 
-    public int getId() {
-        return id;
+    public Readers getReader() {
+        return reader;
     }
 
-    public int getReaderId() {
-        return readerId;
+    public void setReader(Readers reader) {
+        this.reader = reader;
     }
+
+    public Books getBook() {
+        return book;
+    }
+
+    public void setBook(Books book) {
+        this.book = book;
+    }
+
+   
+
+    public Borrows getTempBorrow() {
+        return tempBorrow;
+    }
+
+    public void setTempBorrow(Borrows tempBorrow) {
+        this.tempBorrow = tempBorrow;
+    }
+    
 
     public String getBorrowDateTime() {
         return borrowDateTime;
@@ -56,19 +75,26 @@ public class Returns {
     public void setReturnDateTime(String returnDateTime) {
         this.returnDateTime = returnDateTime;
     }
+
+    // to be used to print returning books from a specific reader ID
     public String listReturningID() {
-        return String.format("%s %-30.30s %s %s %20s %s %n", "Returning Books ID(s):", printBooksId(), "Borrowing Date:", getBorrowDateTime(),  "Returning Date",getReturnDateTime());
+        return String.format("%s %-30.30s %s %s %20s %s %n", "Returning Books ID(s):", book.getId(), "Borrowing Date:", getBorrowDateTime(), "Returning Date", getReturnDateTime());
     }
-    public String printBooksId() {
-        String booksID =Arrays.toString(booksId);
-        return booksID.substring(1, booksID.length()-1); // to remove []
+
+//    // format the array of books id to string and removes "[" and "]"
+//    public String printBooksId() {
+//        String booksID = Arrays.toString(booksId);
+//        return booksID.substring(1, booksID.length() - 1); // to remove []
+//    }
+
+    // format used when save to file
+    public String toSaveToFile() {
+        return String.format(reader.getId()+ "," + book.getId()+ "," + getBorrowDateTime() + "," + getReturnDateTime() );
+
     }
-    public String toSaveToFile(){
-        return  String.format(getReaderId()+","+getReturnDateTime()+","+ printBooksId().replace(",", "")+","+getBorrowDateTime()) ;
-   
-}
+
     @Override
     public String toString() {
-        return String.format("%s %-10s %s %-30.30s %s %s %20s %s %n","Reader ID:", getReaderId(),"Borrowed Books ID(s):",printBooksId() ,"Borrowing Date:",getBorrowDateTime(), "Returning Date",getReturnDateTime()) ;
+        return String.format("%s %-10s %s %-30.30s %s %s %20s %s %n", "Reader ID:", reader.getId(), "Borrowed Books ID(s):", book.getId(), "Borrowing Date:", getBorrowDateTime(), "Returning Date", getReturnDateTime());
     }
 }
