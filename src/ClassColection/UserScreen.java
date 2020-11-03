@@ -6,7 +6,6 @@
 package ClassColection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -215,7 +214,7 @@ public class UserScreen {
         System.out.println("1 - Books");
         System.out.println("2 - Readers");
         System.out.println("3 - Borrow a book");
-        System.out.println("4 - Return a book <being implemented>");
+        System.out.println("4 - Return a book");
         System.out.println("9 - Exit");
         System.out.print("Enter the option: < only numbers >");
         System.out.println("(Shortcuts ex: to list all Books enter 12)");
@@ -248,7 +247,6 @@ public class UserScreen {
             title = (title.isBlank() ? title.trim() : title);
             author = (author.isBlank() ? author.trim() : author);
 
-            // System.out.println("-- Searching in progress --");
             System.out.printf("%20.20s %n", "-- Result --");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
             sortSearch.searchBook(title, author);
@@ -265,8 +263,7 @@ public class UserScreen {
 
     // Sort Book Screen 
     private void sortBookScreen(int option, String target) {
-        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n");
-        //System.out.println("-- Sorting in Progress --");  
+        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n"); 
         System.out.printf("%20.20s %n", "-- Result --\n");
         sortSearch.listSortedtBook(target);
         System.out.println("\n0 - Return to Main Screen");
@@ -312,8 +309,7 @@ public class UserScreen {
             // check if name or id is blank, if so, firstName or lastName is set as empty.
             firstName = (firstName.isBlank() ? firstName.trim() : firstName);     // OLHA AQUI e VE SE CONSEGUE MELHORAR ISSO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             lastName = (lastName.isBlank() ? lastName.trim() : lastName);
-
-            //System.out.println("-- Searching in progress --");
+            
             System.out.printf("%20.20s %n", "-- Result --\n");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
             sortSearch.searchReader(firstName, lastName, id, target);
@@ -335,7 +331,6 @@ public class UserScreen {
     private void sortReaderScreen(int option, String target) {
 
         System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Reader by " + target + "\n");
-        // System.out.println("-- Sorting in Progress --");  
         System.out.printf("%20.20s %n", "-- Result --");
         sortSearch.listSortedtReader(target);
         System.out.println("Select one of the options bellow:\n");
@@ -361,20 +356,20 @@ public class UserScreen {
     private void borrowBookScreen() {
 
         Scanner sc = new Scanner(System.in);
-        ArrayList<Books> booksArray = new ArrayList<>() ;  // variable to keep books IDs chosen by the user
+        ArrayList<Books> booksArray = new ArrayList<>();  // variable to keep books IDs chosen by the user
         System.out.println("\n( 3.1 ) Borrowing Book Screen\n");
         System.out.println("Enter the Book ID: <Enter more than one ID separated by empty space>");
         String input = sc.nextLine(); //get a string from the user
         System.out.printf("%20.20s %n", "-- Book(s) --");
         List list = sortSearch.checkBookIDBorrow(input); // call function to delete all invalid input, then sort, remove duplicates, and return a List with an Array of valid IDs, and String of Invalid inputs.
-        booksArray =  (ArrayList<Books>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;
+        booksArray = (ArrayList<Books>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;
         String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
         if (booksArray == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
             System.out.print("--- ID CANNOT BE BLANK ---\n");
         } else if (!toReturnInvalid.isBlank()) { //check if toReturnInvalid is not empty or blank // 
             System.out.printf("%s %s %s", "\n--- WARNING: INVALID ID >>", toReturnInvalid, "<< ONLY NUMBERS ALLOWED ---\n");
         }
-        if (booksArray!=null) {
+        if (booksArray != null) {
 
             System.out.println("\nEnter the Reader ID:");
             Integer readerId = null; // create to keep readersId chosen by the user
@@ -388,10 +383,10 @@ public class UserScreen {
             if (readerId != null && readerId > 0) {
                 Readers reader = sortSearch.BorrowIdReader(readerId); // call function check id reader is valid, and return reader
                 System.out.println(reader);
-                if (reader!=null) { 
-                     String toPrint="";
-                    for (Books book: booksArray){
-                        toPrint+=book.getId()+ ", ";
+                if (reader != null) {
+                    String toPrint = "";
+                    for (Books book : booksArray) {
+                        toPrint += book.getId() + ", ";
                     }
                     toPrint = toPrint.substring(0, toPrint.length() - 2); // to remove [ ] from the string
                     System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Borrowed Book ID(s):", toPrint, " ---\n");
@@ -400,9 +395,8 @@ public class UserScreen {
                     if (input.equalsIgnoreCase("Y")) {
                         ReadWriteFile rw = new ReadWriteFile();
                         // Calls a function to save new returnins to data file, and also calls an function to add new data to Returns ArrayList3
-                        ArrayList<Borrows> borrowsArray=  rw.SaveBorrow(reader, booksArray);
+                        ArrayList<Borrows> borrowsArray = rw.SaveBorrow(reader, booksArray);
                         sortSearch.addObjectToArray(borrowsArray, null, "Borrow");
-
                         System.out.println("-- BORROWING was RECORDED --");
                     } else {
                         System.out.println("--- CANCELED by USER ---");
@@ -475,16 +469,16 @@ public class UserScreen {
             System.out.println("--- ID INVALID ---\n");
         }
         if (readerId != null && readerId > 0) {
-            Readers reader= sortSearch.ReturnReader(readerId);// function check there is the id reader in the borrow array and return reader.
-            if (reader!=null) { 
+            Readers reader = sortSearch.ReturnReader(readerId);// function check there is the id reader in the borrow array and return reader.
+            if (reader != null) {
                 System.out.println("-- List of Borrowed BOOK ID(s) --");
                 ArrayList<Borrows> toReturnBook = sortSearch.listBorrowBooksToReturn(reader);  // call function to join all the borrow book IDs from a specific user and return a integer array
-                // ArrayList<Returns> toReturnBook = sortSearch.generateListToReturn(readerId);
+                
                 System.out.println("\nEnter the Book ID to RETURN: <Enter more than one ID separated by empty space>");
                 input = sc.nextLine();
-                List list = sortSearch.checkBookIDReturn(input,toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
-                toReturnBook =  (ArrayList<Borrows>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;               
-               // toReturnBook = sortSearch.checkReaderBorrow(toReturnBook,booksArray);
+                List list = sortSearch.checkBookIDReturn(input, toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
+                toReturnBook = (ArrayList<Borrows>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;               
+              
                 String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
                 if (toReturnBook == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
                     System.out.print("--- ID CANNOT BE BLANK ---\n");
@@ -493,12 +487,9 @@ public class UserScreen {
                 }
 
                 if (toReturnBook != null) {
-                  //  toReturnBook = sortSearch.verifyingReturnId (toReturnBook);// compare selected borrowed Id by the user with borrowed Id from the file
-                 //   toReturnBook = sortSearch.verifyingReturnId(toReturnBook, booksId, readerId);// compare selected borrowed Id by the user with borrowed Id from the file
-                    //String toPrint = Arrays.toString(booksId); // join the elements of String Array in one String
-                    String toPrint="";
-                    for (Borrows book: toReturnBook){
-                        toPrint+=book.getBook().getId()+ ", ";
+                    String toPrint = "";
+                    for (Borrows book : toReturnBook) {
+                        toPrint += book.getBook().getId() + ", ";
                     }
                     toPrint = toPrint.substring(0, toPrint.length() - 2); // to remove ", " from the string
                     System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Returning Book ID(s):", toPrint, " ---\n");
@@ -510,8 +501,6 @@ public class UserScreen {
                         ReadWriteFile rw = new ReadWriteFile();
                         ArrayList<Returns> toReturnArray = rw.SaveReturn(toReturnBook); // Call a function to save new returnins to data file,
                         sortSearch.addObjectToArray(toReturnBook, toReturnArray, "Return"); // Call an function to update Returns ArrayList with the new entries.                         
-                        
-                        //sortSearch.addObjectToArray(rw.updateBorrow(toReturnBook), null, "Borrow");
                         System.out.println("-- RETURNING was RECORDED --");
                     } else {
                         System.out.println("--- CANCELED by USER ---");
@@ -558,54 +547,3 @@ public class UserScreen {
     }
 
 }
-
-
-/*
-                                                int[] selectBooks = null;        
-                                                 int[] selectbook;
-                                                 System.out.println("Enter the TITLE: <Leave it blank if you have the ID>");
-                                                 title = sc.nextLine();
-                                                 System.out.println("Enter the AUTHOR: <Leave it blank if you have the ID>");
-                                                 author = sc.nextLine();  
-                                                 if (!title.isBlank()|| !author.isBlank()){//check if user entered a word for Title and/or Author. 
-                                                     title = ( title.isBlank()? title.trim() : title); // check if Title or Author is blank, if so, Title or Author is set as empty.
-                                                     author = ( author.isBlank()? author.trim() : author);  
-                                                     System.out.printf("%20.20s %n","-- Result --");
-                                                     sortSearch.searchBook( title, author);// call the sortSearch function to search or Author or Title or both, according to the user decision.
-                                                 }
- */
- /*
-        Integer[] booksId = null;  // variable to keep books IDs chosen by the user
-        System.out.println("Enter the Book ID: <Enter more than one ID separated by empty space>");
-        input =  sc.nextLine(); //get a string from the user
-        String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
-        booksId = new Integer[selectedId.length]; // creating an array with the size of IDs the user entered.
-        input =""; // reusing variable to record invalid entries.
-        int i =0;
-        for (String id : selectedId){
-            try{ 
-                booksId[i] =Integer.parseInt(id);//convert each ID to integer and send it to an array of integer
-                i++;
-            }
-            catch (NumberFormatException ex){ //if user entered characters than numbers.
-                Integer[] temp = new Integer[booksId.length - 1]; //temp array with lenght of booksId -1, it is going to copy booksId array
-                if (i!=0)
-                    System.arraycopy(booksId, 0 , temp, 0, i );// copy valid Integer from booksId array to temp array
-                booksId = new Integer[booksId.length - 1];  // reduce lenght of booksId array
-                booksId = temp; // booksId array receive temp.
-                if (id.isBlank()){ //include empty to the string input if id is empty
-                    id = "EMPTY";
-                }
-                input +=id +", "; // append invalid id
-            }              
-        }
-        if (!input.isBlank()){ //check if input is not empty or blank // bellow, the lenght of the string input is reduced dinamically using printf to delete undesirable characteres in the end of the string
-            System.out.printf("%s %"+(input.length()-2)+"."+(input.length()-2)+"s %s" , "\n--- WARNING: ID INVALID >>",input,"<< ONLY NUMBERS ALLOWED ---\n\n");
-        }     
-        if (booksId==null){ //if user entered empty data
-            System.out.println("--- ID CANNOT BE BLANK ---\n");
-       
-        else {
-            System.out.printf("%20.20s %n","-- Book(s) --");
-            booksId = sortSearch.BorrowIdBook(booksId); // call function that gonna sort, remove duplicates, and return valid IDs;
-         }*/

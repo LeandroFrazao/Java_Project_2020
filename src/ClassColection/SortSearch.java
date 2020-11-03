@@ -342,7 +342,7 @@ public class SortSearch {
         ArrayList<Books> tempIds = new ArrayList<>();
         ArrayList<Borrows> toReturn = new ArrayList<>();
         List<Borrows> toBefound = new LinkedList<>(chosenBooks);
- 
+
         this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
         checkAndSort("books");//function to check if an array is already sorted by some type
         ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
@@ -357,7 +357,7 @@ public class SortSearch {
             }
         }
         if (toReturn != null) {
-            Borrows bookFound=null;
+            Borrows bookFound = null;
             for (int i = 0; i < tempIds.size(); i++) {
                 for (Borrows borrow : toBefound) {
                     //         System.out.println("borrow: "+ borrow.getBook().getId()+" tempids: "+tempIds.get(i).getId());
@@ -381,14 +381,14 @@ public class SortSearch {
 
             }
             notFound.removeAll(validBooks);
-            
+
             String toAddtoError = notFound.toString();
-            toReturnError+= toAddtoError.substring(1, toAddtoError.length() -1);//to remove ", " from the end of the string
-            
+            toReturnError += toAddtoError.substring(1, toAddtoError.length() - 1);//to remove ", " from the end of the string
+
         }
         if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
             toReturnError = toReturnError.replace("-1, ", "");//  to remove "-1,", which represent duplicates
-           
+
             System.out.printf("%s %s %s", "--- Book ID:", toReturnError, "--- NOT FOUND ---\n");
         }
 
@@ -417,7 +417,7 @@ public class SortSearch {
         int mid = (low + high) / 2;
         if (low <= high && mid < array.size()) {// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug)
             if (array.get(mid).getId() == target) {
-               // System.out.print(array.get(mid));
+                // System.out.print(array.get(mid));
                 return mid;
             } else if (array.get(mid).getId() > target) {
                 return binarySearchBooksId(array, target, low, mid - 1);
@@ -454,13 +454,17 @@ public class SortSearch {
     }
 
     // list Borrow  all books or books from a specific reader Id 
-    public void listBorrowBooks(String choice, int readerId) {
+    public void listBorrowBooks(String target, int readerId) {
 
-        if (choice.equals("ALL")) { // print list of all borrowed books 
-            for (Borrows borrow : borrows) {
-                System.out.print(borrow);
+        if (target.equals("ALL")) { // print list of all borrowed books 
+            if (borrows.size() == 0) {
+                System.out.println("--- NO BORROWINGS FOUND ---");
+            } else {
+                for (Borrows borrow : borrows) {
+                    System.out.print(borrow);
+                }
             }
-        } else if (choice.equals("ID")) {// // print list of borrowed books by Reader ID
+        } else if (target.equals("ID")) {// // print list of borrowed books by Reader ID
             boolean found = false;
             for (Borrows borrow : borrows) {
                 if (borrow.getReader().getId() == readerId) {
@@ -526,7 +530,8 @@ public class SortSearch {
     private List returnValidInvalidBorrows(ArrayList<Books> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
-     private List returnValidInvalidReturns(ArrayList<Borrows> valid, String invalid) {
+
+    private List returnValidInvalidReturns(ArrayList<Borrows> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
 
@@ -598,21 +603,6 @@ public class SortSearch {
             if (borrow.getReader() == reader) {
                 listBorrowsToReturn.add(borrow);
                 toReturnBooks += borrow.getBook().getId() + ", ";
-                ///              Returns booksToReturn = new Returns(readerId, borrow.getBorrowDateTime(), borrow.getBook().getId(), "ok");
-                //              booksToReturn.setBorrowId(borrow.getId());
-                //              toReturnBooks += booksToReturn.printBooksId() + ", ";
-                //              listToReturn.add(booksToReturn);
-
-//                for (int borrowBookId : borrow.getBooksId()) {
-//                    if (i == booksId.length) {//to increasy size of the array while it finds valid books
-//                        Integer[] temp = new Integer[booksId.length + 1];
-//                        System.arraycopy(booksId, 0, temp, 0, i);
-//                        booksId = new Integer[booksId.length + 1];
-//                        booksId = temp;
-//                    }
-//                    booksId[i] = borrowBookId;
-//                    i++;
-//                }
             }
         }
 
@@ -622,181 +612,32 @@ public class SortSearch {
         return listBorrowsToReturn;
     }
 
-//    public ArrayList<Returns> generateListToReturn(int readerId) {
-//        ArrayList<Returns> listToReturn = new ArrayList<>();
-//        String toReturnBooks = "";
-//        //boolean valid = false; //boolean when it true, allow data to be added on ArrayList listToReturn
-//        int index = 0;
-//        Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
-//        for (Borrows borrow : borrows) {
-//            if (borrow.getReaderId() == readerId) {
-//                Returns booksToReturn = new Returns(readerId, borrow.getBorrowDateTime(), borrow.getBooksId(), "ok");
-//                listToReturn.add(booksToReturn);
-//            }
-//        }
-//        for (Returns retBook : listToReturn) {
-//            System.out.print(retBook.printBooksId() + ", ");
-//        }
-//        return listToReturn;
-//    }
     public ArrayList<Borrows> verifyingReturnId(ArrayList<Borrows> listToReturn, ArrayList<Borrows> booksId) {
         ArrayList<Borrows> chosenToReturn = new ArrayList<>();
         Integer idBookFound = 0;
         List<Integer> booksIdLeft = new ArrayList<>();
         //List<Integer> booksIdList = new LinkedList<Integer>(Arrays.asList(booksId)); // create an linkedList of Books chosen by the user.    
         ArrayList<Integer> validId = new ArrayList<>(); // ArrayList to store the books found    
-
-//        for (Books book : booksId) {
-//            for (Borrows borrow : listToReturn) {
-//                System.out.println("BOrrow: " + borrow.getBook().getId() + " Book: " + book.getId());
-//                if (borrow.getBook().getId() == book.getId()) {
-//                    chosenToReturn.add(borrow);
-//                }
-//            }
-//        }
-
-//        int index = 0;
-//        while (booksIdList.size() > 0) {
-//            for (int i = 0; i < listToReturn.size(); i++) {
-//                for (int j = 0; j < listToReturn.get(i).getBooksId().length; j++) {
-//                    if (listToReturn.get(i).getBooksId()[j] == booksIdList.get(index)) {
-//                        validId.add(booksIdList.get(index));
-//                       
-//                        index++;
-//                        //i = 0;
-//                        
-//                         if (booksIdList.size() <= index) {
-//                            break;
-//                        }
-//                    }
-//
-//                }
-//                booksIdList.removeAll(validId);
-//                if (booksIdList.size() -1 <= index) {
-//                    //break;
-//                }else{
-//                    index++;
-//                    i=0;
-//                }
-//                
-//                if (validId.size() != 0) {
-//                    Integer[] temp1 = validId.toArray(new Integer[0]); // temporary variable to convert ArrayList<Integer> to Integer array
-//                    Returns booksToReturn = new Returns(readerId, listToReturn.get(i).getBorrowDateTime(), temp1, "ok");
-//                    chosenToReturn.add(booksToReturn);
-////
-//                    validId = new ArrayList<>(); // to clean the variable validId before the loop with a new object retBook ("Return class") starts  
-//                    booksIdLeft = new ArrayList<>();
-//                    index = 0;
-//                    i= -1;
-//                    if (booksIdList.size() == 0) {
-//                        break;
-//                    }
-//                }
-//
-//            }
-//    /    }
-//        for (Borrows retBook : listToReturn) {  //for each object of the class "Returns",
-//            for (Books retBookId : retBook.getBook()) { // it will be checked all books id,
-//                for (Integer bookID : booksIdList) {// for each book id chosen by the user
-//                    if (retBookId == bookID) { // if the one object "returns" contains one of the books ID,
-//                        validId.add(bookID); // it will be stored in an arrayList. It will store all book Ids found in one object "Returns"
-//                        idBookFound = bookID;
-//                        break;
-//                    }
-//                }
-////                if (validId != null) {
-//                    if (retBookId != idBookFound) {
-//                        booksIdLeft.add(retBookId);
-//                        System.out.println(booksIdLeft.toString());
-//
-//                    }
-//                }
-        //    booksIdList.removeAll(validId); //delete from the booksIdList all books id found, to avoid repetition when trying to find a book in the loop.
-        //}
-//            if (validId.size() != 0) {
-//                Integer[] temp1 = validId.toArray(new Integer[0]); // temporary variable to convert ArrayList<Integer> to Integer array
-        //Integer[] temp2 = booksIdLeft.toArray(new Integer[0]); // temporary variable to convert ArrayList<Integer> to Integer array
-        //object "booksToReturn" gets the value of Borrowdatetime from retBook (a "Return" object),   book Ids found, and readerId 
-        //               Returns booksToReturn = new Returns(readerId, retBook.getBorrowDateTime(), temp1, "ok");
-        // Borrows tempBorrow = new Borrows(readerId, retBook.getBorrowDateTime(), temp2, "ok");
-        //              booksToReturn.setBorrowId(retBook.getborrowId());
-        // booksToReturn.setTempBorrow(tempBorrow);
-        //             chosenToReturn.add(booksToReturn);
         validId = new ArrayList<>(); // to clean the variable validId before the loop with a new object retBook ("Return class") starts  
         booksIdLeft = new ArrayList<>();
         idBookFound = 0;
-        //     }
-        // }
-//        int index =0;
-//        booksIdList = new LinkedList<Integer>(Arrays.asList(booksId));
-//        for (int i = 0; i <chosenToReturn.size(); i++){
-//            for (int j = 0; j <listToReturn.size(); j++){
-//            if (chosenToReturn.get(i).getborrowId()==j){
-//                listToReturn.get(i).getBooksId();
-//                chosenToReturn.get(i).getBooksId();
-//                listToReturn.get(i).getBooksId();
-//                
-//                         }
-//            }}
 
-////            for (Integer retBookId : retBook.getBooksId()) {
-////
-////                if (retBookId != booksIdList.get(index)) {
-////                        booksIdLeft.add(retBookId); // it will be stored in an arrayList. It will store all book Ids not found in one object "Returns"
-////                        //index++;
-////                        //break;
-////                    }
-////                //  break;  
-////                
-////                
-////               // booksIdList.removeAll(validId); //delete from the booksIdList all books id found, to avoid repetition when trying to find a book in the loop.
-////            }
-////            if (booksIdLeft.size() != 0) {
-////               Integer[] temp2 = booksIdLeft.toArray(new Integer[0]); // temporary variable to convert ArrayList<Integer> to Integer array
-////                  Borrows tempBorrow = new Borrows(readerId, retBook.getBorrowDateTime(), temp2, "ok");
-////                 // chosenToReturn.
-////            }
-////        }
-//        
+        
         return chosenToReturn;
 
     }
 
-//    public Integer[] verifyingReturnId(Integer[] borrowedListId, Integer[] booksId, Integer readerId) {
-//        int i = 0;
-//        int index = 0;
-//        Integer[] validId = new Integer[1];
-//        for (int borrowId : borrowedListId) {
-//            for (int choosenId : booksId) {
-//                if (borrowId == choosenId) {
-//
-//                    if (index == validId.length) {//to increasy size of the array while it finds valid books
-//                        Integer[] temp = new Integer[validId.length + 1];
-//                        System.arraycopy(validId, 0, temp, 0, index);
-//                        validId = new Integer[validId.length + 1];
-//                        validId = temp;
-//                    }
-//                    validId[index] = choosenId;
-//                    index++;
-//
-//                }
-//            }
-//        }
-//        if (validId.length == 0) // check if validId has lenght equal to 0, then it is set to be null.
-//        {
-//            validId = null;
-//        }
-//
-//        return validId;
-//    }
     // function to print list of All returning books or returning books from a specific reader ID
-    public Integer[] listReturnBooks(String choice, int readerId) {
+    public Integer[] listReturnBooks(String target, int readerId) {
 
-        if (choice.equals("ALL")) { // print list of all borrowed books 
+        if (target.equals("ALL")) { // print list of all borrowed books 
+            if (returns.size() == 0) {
+                System.out.println("--- NO RETURNINGS FOUND ---");
+            } else {
             for (Returns retBook : returns) {
                 System.out.print(retBook);
-            }
-        } else if (choice.equals("ID")) {// // print list of borrowed books by Reader ID
+            }}
+        } else if (target.equals("ID")) {// // print list of borrowed books by Reader ID
             boolean found = false;
             for (Returns retBook : returns) {
                 if (retBook.getReader().getId() == readerId) {
@@ -820,9 +661,18 @@ public class SortSearch {
 
             //to remove all borrowing books that were returned
             borrows.removeAll(borrowList);
-            
+            ReadWriteFile rw = new ReadWriteFile();
+            if (borrows.size() != 0) {
+                rw.updateBorrow(borrows);
+            } else {
+                rw.updateBorrow(null);
+            }
+
+            for (Returns retBook : returnList) {
+                returns.add(retBook);
+            }
         }
-           /* List<Borrows> tempBorrows = new ArrayList<>();
+        /* List<Borrows> tempBorrows = new ArrayList<>();
 
             for (int i = 0; i < borrows.size(); i++) {
                 for (Returns retBook : returnList) {
@@ -872,10 +722,6 @@ public class SortSearch {
             System.out.println(tempBorrows.get(0).listBorrowingID());
         }
         //  borrows = new ArrayList<>(tempBorrows);*/
-           
-        for (Returns retBook : returnList) {
-            returns.add(retBook);
-        }
 
     }
 
