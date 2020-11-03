@@ -29,7 +29,7 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
  *
  * @author Leand
  */
-public class SortSearch  {
+public class SortSearch {
 
     //This variable carries choice made by the user.
     private String choice;
@@ -325,7 +325,7 @@ public class SortSearch  {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
         checkAndSort("books");//function to check if an array is already sorted by some type
         ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
-       // int counterInvalid = 0;
+        // int counterInvalid = 0;
         String toReturnError = "";
         for (int target : ids) {
             int id = binarySearchBooksId(books, target, 0, books.size());
@@ -446,7 +446,7 @@ public class SortSearch  {
     // insertionSort and delete duplicates in the array of selected IDs from the USER
     private ArrayList<Integer> insertSort(ArrayList<Integer> selected) {
 
-   //     int countDuplicate = 0;
+        //     int countDuplicate = 0;
         for (int i = 1; i < selected.size(); i++) {
             int key = selected.get(i);
             int j = i;
@@ -528,8 +528,8 @@ public class SortSearch  {
                 if (toReturn.get(i).getBook() == booksArray.get(j)) {
                     tempToReturn.add(toReturn.get(i));
                 }// else {
-                  
-               // }
+
+                // }
             }
             if (tempToReturn.size() == 0) {
                 System.out.print("--- ID CANNOT BE BLANK ---\n");
@@ -542,6 +542,7 @@ public class SortSearch  {
     private List returnValidInvalidBorrows(ArrayList<Books> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
+
     //Function used to return a list of 2 Arrays
     private List returnValidInvalidReturns(ArrayList<Borrows> valid, String invalid) {
         return Arrays.asList(valid, invalid);
@@ -553,7 +554,7 @@ public class SortSearch  {
         ArrayList<Books> booksArray = new ArrayList<>();
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
         String toReturnInvalid = ""; // variable to record invalid entries.
-       // int i = 0;
+        // int i = 0;
         for (String id : selectedId) {
             try {
 
@@ -580,7 +581,7 @@ public class SortSearch  {
         ArrayList<Integer> booksId = new ArrayList<>();  // variable to keep books IDs chosen by the user
         ArrayList<Borrows> booksArray = new ArrayList<>();
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
-        
+
         String toReturnInvalid = ""; // variable to record invalid entries.
         int i = 0;
         for (String id : selectedId) {
@@ -605,11 +606,11 @@ public class SortSearch  {
     }
 
     public ArrayList<Borrows> listBorrowBooksToReturn(Readers reader) {
-    //    ArrayList<Returns> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books, so the user can choose to be returned.
+        //    ArrayList<Returns> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books, so the user can choose to be returned.
         ArrayList<Borrows> listBorrowsToReturn = new ArrayList<>();
         String toReturnBooks = "";
-     //   int i = 0;
-    //    Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
+        //   int i = 0;
+        //    Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
         for (Borrows borrow : borrows) {
             if (borrow.getReader() == reader) {
                 listBorrowsToReturn.add(borrow);
@@ -622,18 +623,18 @@ public class SortSearch  {
         return listBorrowsToReturn;
     }
 
-    
     // function to print list of All returning books or returning books from a specific reader ID
-    public Integer[] listReturnBooks(String target, int readerId)  {
+    public Integer[] listReturnBooks(String target, int readerId) {
 
         if (target.equals("ALL")) { // print list of all borrowed books 
             if (returns.size() == 0) {
                 System.out.println("--- NO RETURNINGS FOUND ---");
             } else {
-            for (Returns retBook : returns) {
-                System.out.print(retBook);
-            }}
-            
+                for (Returns retBook : returns) {
+                    System.out.print(retBook);
+                }
+            }
+
         } else if (target.equals("ID")) {// // print list of borrowed books by Reader ID
             boolean found = false;
             for (Returns retBook : returns) {
@@ -672,26 +673,25 @@ public class SortSearch  {
 
     }
 
-    
-    public void showBookCover(int bookId){
+    public void showBookCover(int bookId) {
         try {
             //BufferedImage image = ImageIO.read(new File("3.jpg"));
             bookId = (binarySearchBooksId(books, bookId, 0, books.size()));
-            if (bookId!=-1){ 
-            URL imageURL = new URL(books.get(bookId).getImageUrl());
-            java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(imageURL);
-             JFrame frame = new JFrame(); 
-             frame.setVisible(true);
-             frame.toFront();
-            JLabel label = new JLabel(new ImageIcon(image));
-            JPanel panel = new JPanel();
-            panel.add(label);
-            frame.toFront();
-            JScrollPane scrollPane = new JScrollPane(panel);
-            frame.toFront();
-            JOptionPane.showMessageDialog(null, scrollPane);
-            frame.setVisible(false);
-            } else{
+            if (bookId != -1) {
+                URL imageURL = new URL(books.get(bookId).getImageUrl());
+                java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(imageURL);
+                JFrame frame = new JFrame();
+                frame.setVisible(true);
+                frame.toFront();
+                JLabel label = new JLabel(new ImageIcon(image));
+                JPanel panel = new JPanel();
+                panel.add(label);
+                frame.toFront();
+                JScrollPane scrollPane = new JScrollPane(panel);
+                frame.toFront();
+                JOptionPane.showMessageDialog(null, scrollPane);
+                frame.setVisible(false);
+            } else {
                 System.out.println("--- ID INVALID ---\n");
             }
         } catch (MalformedURLException ex) {
