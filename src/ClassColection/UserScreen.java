@@ -101,6 +101,11 @@ public class UserScreen {
                 this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
                 sortBookScreen(option, "Author");
                 break;
+            case 114:// See the Cover of the book
+                this.option = 11; // preserve the last valid option, and it is used to treat errors
+                this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
+                showCoverScreen();
+                break;
             case 2:// Readers Screen
                 this.option = option;
                 this.parentOption = 0;
@@ -257,13 +262,35 @@ public class UserScreen {
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("1 - Search again");
+        System.out.println("4 - See the Cover  <Need Internet OR will show Blank Image>");
+        System.out.println("5 - Return to Books Screen");
+        System.out.println("9 - Exit");
+    }
+
+    // shover cover of the book
+    private void showCoverScreen() {
+        System.out.println("Type the book ID");
+        Scanner sc = new Scanner(System.in);
+        int id = 0;
+        try {
+            String input = sc.nextLine();
+            id = (!input.isBlank() ? Integer.parseInt(input) : -1); // if input is blank, id = -1, then it's not null anymore, and will show a different error message to the user
+            sortSearch.showBookCover(id);
+        } catch (NumberFormatException ex) {
+            System.out.println("--- ID INVALID ---\n");
+        }
+
+        System.out.println("\nSelect one of the options bellow:");
+        System.out.println("\n0 - Return to Main Screen");
+        System.out.println("1 - Search again");
+        System.out.println("4 - See the Cover");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
     }
 
     // Sort Book Screen 
     private void sortBookScreen(int option, String target) {
-        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n"); 
+        System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n");
         System.out.printf("%20.20s %n", "-- Result --\n");
         sortSearch.listSortedtBook(target);
         System.out.println("\n0 - Return to Main Screen");
@@ -281,7 +308,6 @@ public class UserScreen {
         System.out.println("4 - List all Readers (Ascendent ID)");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
-
     }
 
     //search Reader Screen
@@ -309,7 +335,7 @@ public class UserScreen {
             // check if name or id is blank, if so, firstName or lastName is set as empty.
             firstName = (firstName.isBlank() ? firstName.trim() : firstName);     // OLHA AQUI e VE SE CONSEGUE MELHORAR ISSO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             lastName = (lastName.isBlank() ? lastName.trim() : lastName);
-            
+
             System.out.printf("%20.20s %n", "-- Result --\n");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
             sortSearch.searchReader(firstName, lastName, id, target);
@@ -473,12 +499,12 @@ public class UserScreen {
             if (reader != null) {
                 System.out.println("-- List of Borrowed BOOK ID(s) --");
                 ArrayList<Borrows> toReturnBook = sortSearch.listBorrowBooksToReturn(reader);  // call function to join all the borrow book IDs from a specific user and return a integer array
-                
+
                 System.out.println("\nEnter the Book ID to RETURN: <Enter more than one ID separated by empty space>");
                 input = sc.nextLine();
                 List list = sortSearch.checkBookIDReturn(input, toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
                 toReturnBook = (ArrayList<Borrows>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;               
-              
+
                 String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
                 if (toReturnBook == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
                     System.out.print("--- ID CANNOT BE BLANK ---\n");
@@ -493,7 +519,6 @@ public class UserScreen {
                     }
                     toPrint = toPrint.substring(0, toPrint.length() - 2); // to remove ", " from the string
                     System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Returning Book ID(s):", toPrint, " ---\n");
-
                     System.out.println("\nEnter (Y) to CONFIRM or any other to CANCEL:");
                     input = sc.nextLine();
 

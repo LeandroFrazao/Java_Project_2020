@@ -18,7 +18,6 @@ public class Borrows {
     private Readers reader;
     private Books book;
     private String borrowDateTime;
-
     private static int count = 0;
 
     public Borrows(Readers reader, Books book, String borrowDateTime) {

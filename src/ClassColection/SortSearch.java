@@ -5,18 +5,31 @@
  */
 package ClassColection;
 
-import java.lang.reflect.Array;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 /**
  *
  * @author Leand
  */
-public class SortSearch {
+public class SortSearch  {
 
     //This variable carries choice made by the user.
     private String choice;
@@ -312,7 +325,7 @@ public class SortSearch {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
         checkAndSort("books");//function to check if an array is already sorted by some type
         ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
-        int counterInvalid = 0;
+       // int counterInvalid = 0;
         String toReturnError = "";
         for (int target : ids) {
             int id = binarySearchBooksId(books, target, 0, books.size());
@@ -346,7 +359,7 @@ public class SortSearch {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
         checkAndSort("books");//function to check if an array is already sorted by some type
         ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
-        int counterInvalid = 0;
+        //int counterInvalid = 0;
         String toReturnError = "";
         for (int target : ids) {
             int id = binarySearchBooksId(books, target, 0, books.size());
@@ -433,7 +446,7 @@ public class SortSearch {
     // insertionSort and delete duplicates in the array of selected IDs from the USER
     private ArrayList<Integer> insertSort(ArrayList<Integer> selected) {
 
-        int countDuplicate = 0;
+   //     int countDuplicate = 0;
         for (int i = 1; i < selected.size(); i++) {
             int key = selected.get(i);
             int j = i;
@@ -444,9 +457,9 @@ public class SortSearch {
                 selected.set(j, selected.get(j - 1));
                 j--;
             }
-            if (key == -1) { // to count Duplicates
-                countDuplicate++;
-            }
+//            if (key == -1) { // to count Duplicates
+//                countDuplicate++;
+//            }
             selected.set(j, key);
         }
 
@@ -514,14 +527,13 @@ public class SortSearch {
             for (int j = 0; j < booksArray.size(); j++) {
                 if (toReturn.get(i).getBook() == booksArray.get(j)) {
                     tempToReturn.add(toReturn.get(i));
-                } else {
-
-                }
+                }// else {
+                  
+               // }
             }
             if (tempToReturn.size() == 0) {
                 System.out.print("--- ID CANNOT BE BLANK ---\n");
             }
-
         }
         return tempToReturn;
     }
@@ -530,7 +542,7 @@ public class SortSearch {
     private List returnValidInvalidBorrows(ArrayList<Books> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
-
+    //Function used to return a list of 2 Arrays
     private List returnValidInvalidReturns(ArrayList<Borrows> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
@@ -540,9 +552,8 @@ public class SortSearch {
         ArrayList<Integer> booksId = new ArrayList<>();  // variable to keep books IDs chosen by the user
         ArrayList<Books> booksArray = new ArrayList<>();
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
-        //booksId = new Integer[selectedId.length]; // creating an array with the size of IDs the user entered.
         String toReturnInvalid = ""; // variable to record invalid entries.
-        int i = 0;
+       // int i = 0;
         for (String id : selectedId) {
             try {
 
@@ -566,10 +577,10 @@ public class SortSearch {
     }
 
     public List checkBookIDReturn(String input, ArrayList<Borrows> chosenBooks) {
-        ArrayList<Integer> booksId = new ArrayList<Integer>();  // variable to keep books IDs chosen by the user
+        ArrayList<Integer> booksId = new ArrayList<>();  // variable to keep books IDs chosen by the user
         ArrayList<Borrows> booksArray = new ArrayList<>();
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
-        //booksId = new Integer[selectedId.length]; // creating an array with the size of IDs the user entered.
+        
         String toReturnInvalid = ""; // variable to record invalid entries.
         int i = 0;
         for (String id : selectedId) {
@@ -594,41 +605,26 @@ public class SortSearch {
     }
 
     public ArrayList<Borrows> listBorrowBooksToReturn(Readers reader) {
-        ArrayList<Returns> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books, so the user can choose to be returned.
+    //    ArrayList<Returns> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books, so the user can choose to be returned.
         ArrayList<Borrows> listBorrowsToReturn = new ArrayList<>();
         String toReturnBooks = "";
-        int i = 0;
-        Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
+     //   int i = 0;
+    //    Integer[] booksId = new Integer[1];  // variable to keep books IDs registered in the file of the user
         for (Borrows borrow : borrows) {
             if (borrow.getReader() == reader) {
                 listBorrowsToReturn.add(borrow);
                 toReturnBooks += borrow.getBook().getId() + ", ";
             }
         }
-
         toReturnBooks = toReturnBooks.substring(0, toReturnBooks.length() - 2); // to remove ", " in the end of the string 
 
         System.out.print(toReturnBooks + "\n");
         return listBorrowsToReturn;
     }
 
-    public ArrayList<Borrows> verifyingReturnId(ArrayList<Borrows> listToReturn, ArrayList<Borrows> booksId) {
-        ArrayList<Borrows> chosenToReturn = new ArrayList<>();
-        Integer idBookFound = 0;
-        List<Integer> booksIdLeft = new ArrayList<>();
-        //List<Integer> booksIdList = new LinkedList<Integer>(Arrays.asList(booksId)); // create an linkedList of Books chosen by the user.    
-        ArrayList<Integer> validId = new ArrayList<>(); // ArrayList to store the books found    
-        validId = new ArrayList<>(); // to clean the variable validId before the loop with a new object retBook ("Return class") starts  
-        booksIdLeft = new ArrayList<>();
-        idBookFound = 0;
-
-        
-        return chosenToReturn;
-
-    }
-
+    
     // function to print list of All returning books or returning books from a specific reader ID
-    public Integer[] listReturnBooks(String target, int readerId) {
+    public Integer[] listReturnBooks(String target, int readerId)  {
 
         if (target.equals("ALL")) { // print list of all borrowed books 
             if (returns.size() == 0) {
@@ -637,6 +633,7 @@ public class SortSearch {
             for (Returns retBook : returns) {
                 System.out.print(retBook);
             }}
+            
         } else if (target.equals("ID")) {// // print list of borrowed books by Reader ID
             boolean found = false;
             for (Returns retBook : returns) {
@@ -672,59 +669,35 @@ public class SortSearch {
                 returns.add(retBook);
             }
         }
-        /* List<Borrows> tempBorrows = new ArrayList<>();
-
-            for (int i = 0; i < borrows.size(); i++) {
-                for (Returns retBook : returnList) {
-                    if (retBook.getReader().getId() == borrows.get(i).getId()) {
-//                        if (retBook.getTempBorrow().getBooksId().length != 0) {
-//                            tempBorrows.add(retBook.getTempBorrow());
-//                            i++;
-//                        } else {
-//                            i++;
-//                        }
-//                        continue;
-//                    } else {
-//
-//                        tempBorrows.add(borrows.get(i));
-                    }
-
-                }
-            }
-
-//            while (itr.hasNext()) {
-//                // for (Borrows borrow : borrows) {
-//
-//                for (Borrows borrow : borrows) {
-//
-//                    if (borrow.getId() == tempRet.getborrowId()) {
-//                        if (tempRet.getTempBorrow().getBooksId().length != 0) {
-//                            tempRet.setBooksId(tempRet.getTempBorrow().getBooksId());
-//                            tempBorrows.add(tempRet.getTempBorrow());
-//                            tempRet = itr.next();
-//                        } else {
-//                            tempRet = itr.next();
-//
-//                        }
-//                        //tempBorrow = itr.next();
-//
-//                    } else {
-//                        tempBorrows.add(tempRet.getTempBorrow());
-//                        tempRet= itr.next();
-//                    }
-//                    
-//
-//                }
-//
-//                // tempBorrow = itr.next();
-//                //borrows.iterator().next();
-//            }
-            System.out.println(tempBorrows.get(0).listBorrowingID());
-        }
-        //  borrows = new ArrayList<>(tempBorrows);*/
 
     }
 
+    
+    public void showBookCover(int bookId){
+        try {
+            //BufferedImage image = ImageIO.read(new File("3.jpg"));
+            bookId = (binarySearchBooksId(books, bookId, 0, books.size()));
+            if (bookId!=-1){ 
+            URL imageURL = new URL(books.get(bookId).getImageUrl());
+            java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(imageURL);
+             JFrame frame = new JFrame(); 
+             frame.setVisible(true);
+             frame.toFront();
+            JLabel label = new JLabel(new ImageIcon(image));
+            JPanel panel = new JPanel();
+            panel.add(label);
+            frame.toFront();
+            JScrollPane scrollPane = new JScrollPane(panel);
+            frame.toFront();
+            JOptionPane.showMessageDialog(null, scrollPane);
+            frame.setVisible(false);
+            } else{
+                System.out.println("--- ID INVALID ---\n");
+            }
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(SortSearch.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
 /*
 
