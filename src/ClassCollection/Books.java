@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ClassColection;
+package ClassCollection;
 
 /**
  *
@@ -18,15 +18,18 @@ public class Books {
     private String year;
     private String isbn;
     private String imageUrl;
+    private int quantity;
+    private int copiesLeft;
 
     // constructor
-    public Books(int id, String title, String author, String year, String isbn, String imageUrl) {
+    public Books(int id, String title, String author, String year, String isbn, String imageUrl, int quantity) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.year = year;
         this.isbn = isbn;
         this.imageUrl = imageUrl;
+        this.quantity = quantity;
     }
 
     public String getTitle() {
@@ -53,11 +56,24 @@ public class Books {
         return id;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public int getCopiesLeft() {
+        return copiesLeft;
+    }
+
+    public void setCopiesLeft(int copiesLeft) {
+        this.copiesLeft = copiesLeft;
+    }
+
+    
     // create toString contaning all variables
     @Override
     public String toString() {
 
-        return String.format("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %n", "ID:", getId(), "Title:", getTitle(), "Author:", getAuthor(), "Year:", getYear());
+        return String.format("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %10s %s %10s %s %n", "ID:", getId(), "Title:", getTitle(), "Author:", getAuthor(), "Year:", getYear(), "Copies:", getQuantity(),"Left:",getCopiesLeft());
     }
 
 }

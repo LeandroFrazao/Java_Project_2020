@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ClassColection;
+package ClassCollection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,11 +101,11 @@ public class UserScreen {
                 this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
                 sortBookScreen(option, "Author");
                 break;
-            case 114:// See the Cover of the book
+            /*case 114:// See the Cover of the book
                 this.option = 11; // preserve the last valid option, and it is used to treat errors
                 this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
                 showCoverScreen();
-                break;
+                break;*/
             case 2:// Readers Screen
                 this.option = option;
                 this.parentOption = 0;
@@ -212,9 +212,12 @@ public class UserScreen {
 
     // main screen where user chooses options
     private void mainScreen() {
-
-        System.out.println("\n-------- Welcome to Dublin Library System -------- \n");
-        System.out.println("( 0 ) Main Screen\n");
+        System.out.println("( 0 ) Main Screen");
+        System.out.println("\n------------------ Welcome to Dublin Library System ------------------ \n");
+        int catalog = sortSearch.returnTotalOf("Titles");
+        int items = sortSearch.returnTotalOf("Items");
+        int borrowings = sortSearch.returnTotalOf("BorrowedBooks");
+        System.out.printf("%s %-5s %s %-7s %s %-7s %s %-5s %n%n", "--- Catalog:", catalog, "Items:",items, "Available:", items-borrowings, "Borrowings:", borrowings + " ---");
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Books");
         System.out.println("2 - Readers");
@@ -262,13 +265,13 @@ public class UserScreen {
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("1 - Search again");
-        System.out.println("4 - See the Cover  <Need Internet OR will show Blank Image>");
+       // System.out.println("4 - See the Cover  <Need Internet OR will show Blank Image>");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
     }
 
     // shover cover of the book
-    private void showCoverScreen() {
+  /*  private void showCoverScreen() {
         System.out.println("Type the book ID");
         Scanner sc = new Scanner(System.in);
         int id = 0;
@@ -287,7 +290,7 @@ public class UserScreen {
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
     }
-
+*/
     // Sort Book Screen 
     private void sortBookScreen(int option, String target) {
         System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n");
@@ -386,7 +389,7 @@ public class UserScreen {
         System.out.println("\n( 3.1 ) Borrowing Book Screen\n");
         System.out.println("Enter the Book ID: <Enter more than one ID separated by empty space>");
         String input = sc.nextLine(); //get a string from the user
-        System.out.printf("%20.20s %n", "-- Book(s) --");
+        System.out.printf("%n %20.20s %n", "-- Book(s) --");
         List list = sortSearch.checkBookIDBorrow(input); // call function to delete all invalid input, then sort, remove duplicates, and return a List with an Array of valid IDs, and String of Invalid inputs.
         booksArray = (ArrayList<Books>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;
         String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
@@ -407,9 +410,10 @@ public class UserScreen {
                 System.out.println("--- ID INVALID ---\n");
             }
             if (readerId != null && readerId > 0) {
-                Readers reader = sortSearch.BorrowIdReader(readerId); // call function check id reader is valid, and return reader
+                Readers reader = sortSearch.checkIdReader(readerId); // call function check id reader is valid, and return reader
                 System.out.println(reader);
                 if (reader != null) {
+                    if (sortSearch.checkReaderBorrows(reader,booksArray)!=null){
                     String toPrint = "";
                     for (Books book : booksArray) {
                         toPrint += book.getId() + ", ";
@@ -427,7 +431,7 @@ public class UserScreen {
                     } else {
                         System.out.println("--- CANCELED by USER ---");
                     }
-                }
+                }}
             } else {  // Print error message if ID is empty(null)
                 System.out.print(readerId != null ? " --- ID CANNOT BE BLANK ---\n" : "");
             }
@@ -502,6 +506,7 @@ public class UserScreen {
 
                 System.out.println("\nEnter the Book ID to RETURN: <Enter more than one ID separated by empty space>");
                 input = sc.nextLine();
+                System.out.printf("%20.20s %n", "-- Book(s) --");
                 List list = sortSearch.checkBookIDReturn(input, toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
                 toReturnBook = (ArrayList<Borrows>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;               
 

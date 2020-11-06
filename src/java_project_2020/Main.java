@@ -5,7 +5,7 @@
  */
 package java_project_2020;
 
-import ClassColection.UserScreen;
+import ClassCollection.UserScreen;
 
 /**
  *
