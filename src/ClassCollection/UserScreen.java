@@ -101,11 +101,11 @@ public class UserScreen {
                 this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
                 sortBookScreen(option, "Author");
                 break;
-            /*case 114:// See the Cover of the book
+            case 114:// See the Cover of the book and more details
                 this.option = 11; // preserve the last valid option, and it is used to treat errors
                 this.parentOption = 1; // Set the parent of sortBook screen, To return to Book Screen if User type invalid input   
                 showCoverScreen();
-                break;*/
+                break;
             case 2:// Readers Screen
                 this.option = option;
                 this.parentOption = 0;
@@ -217,7 +217,7 @@ public class UserScreen {
         int catalog = sortSearch.returnTotalOf("Titles");
         int items = sortSearch.returnTotalOf("Items");
         int borrowings = sortSearch.returnTotalOf("BorrowedBooks");
-        System.out.printf("%s %-5s %s %-7s %s %-7s %s %-5s %n%n", "--- Catalog:", catalog, "Items:",items, "Available:", items-borrowings, "Borrowings:", borrowings + " ---");
+        System.out.printf("%s %-5s %s %-7s %s %-7s %s %-5s %n%n", "--- Catalog:", catalog, "Items:", items, "Available:", items - borrowings, "Borrowings:", borrowings + " ---");
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Books");
         System.out.println("2 - Readers");
@@ -265,32 +265,31 @@ public class UserScreen {
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("1 - Search again");
-       // System.out.println("4 - See the Cover  <Need Internet OR will show Blank Image>");
+        System.out.println("4 - Details and Cover  <Need Internet OR will show Blank Image>");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
     }
 
     // shover cover of the book
-  /*  private void showCoverScreen() {
-        System.out.println("Type the book ID");
+    private void showCoverScreen() {
+        System.out.println("\nEnter the book ID");
         Scanner sc = new Scanner(System.in);
         int id = 0;
         try {
             String input = sc.nextLine();
-            id = (!input.isBlank() ? Integer.parseInt(input) : -1); // if input is blank, id = -1, then it's not null anymore, and will show a different error message to the user
+            id = (!input.isBlank() ? Integer.parseInt(input) : -1); // if input is blank, id = -1, othewise if it's not numeric, it catchs an error, and will show error message to the user
             sortSearch.showBookCover(id);
         } catch (NumberFormatException ex) {
             System.out.println("--- ID INVALID ---\n");
         }
-
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("1 - Search again");
-        System.out.println("4 - See the Cover");
+        System.out.println("4 - Details and Cover  <Need Internet OR will show Blank Image>");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
     }
-*/
+
     // Sort Book Screen 
     private void sortBookScreen(int option, String target) {
         System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n");
@@ -336,17 +335,18 @@ public class UserScreen {
         //check if user entered a word for Title and/or Author. 
         if (!firstName.isBlank() || !lastName.isBlank()) {
             // check if name or id is blank, if so, firstName or lastName is set as empty.
-            firstName = (firstName.isBlank() ? firstName.trim() : firstName);     // OLHA AQUI e VE SE CONSEGUE MELHORAR ISSO   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            firstName = (firstName.isBlank() ? firstName.trim() : firstName);
             lastName = (lastName.isBlank() ? lastName.trim() : lastName);
 
             System.out.printf("%20.20s %n", "-- Result --\n");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
             sortSearch.searchReader(firstName, lastName, id, target);
 
-        } else if (id != null && id > 0) {
+        } else if (id > 0) {
+            System.out.printf("%20.20s %n", "-- Reader --");
             sortSearch.searchReader(firstName, lastName, id, target);
-        } else {  // Print error message if user didnt type firstName or lastName,                                    or if ID is empty(null)
-            System.out.print((target.equals("Name") ? "--- Both  First Name and Last Name cannot be blank ---\n" : id != null ? " --- ID cannot be blank ---\n" : ""));
+        } else {  // Print error message if user didnt type firstName or lastName,                                    id is -1 if user enter blank space  
+            System.out.print((target.equals("Name") ? "--- Both  First Name and Last Name cannot be blank ---\n" : id == -1 ? " --- ID cannot be blank ---\n" : id != 0 ? " --- ID INVALID ---\n" : ""));
         }
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
@@ -413,25 +413,26 @@ public class UserScreen {
                 Readers reader = sortSearch.checkIdReader(readerId); // call function check id reader is valid, and return reader
                 System.out.println(reader);
                 if (reader != null) {
-                    if (sortSearch.checkReaderBorrows(reader,booksArray)!=null){
-                    String toPrint = "";
-                    for (Books book : booksArray) {
-                        toPrint += book.getId() + ", ";
+                    if (sortSearch.checkReaderCurrentBorrows(reader, booksArray) != null) {
+                        String toPrint = "";
+                        for (Books book : booksArray) {
+                            toPrint += book.getId() + ", ";
+                        }
+                        toPrint = toPrint.substring(0, toPrint.length() - 2); // to remove [ ] from the string
+                        System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Borrowed Book ID(s):", toPrint, " ---\n");
+                        System.out.println("\nEnter (Y) to CONFIRM or any other to CANCEL:");
+                        input = sc.nextLine();
+                        if (input.equalsIgnoreCase("Y")) {
+                            ReadWriteFile rw = new ReadWriteFile();
+                            // Calls a function to save new returnins to data file, and also calls an function to add new data to Returns ArrayList3
+                            ArrayList<Borrows> borrowsArray = rw.SaveBorrow(reader, booksArray);
+                            sortSearch.addObjectToArray(borrowsArray, null, "Borrow");
+                            System.out.println("-- BORROWING was RECORDED --");
+                        } else {
+                            System.out.println("--- CANCELED by USER ---");
+                        }
                     }
-                    toPrint = toPrint.substring(0, toPrint.length() - 2); // to remove [ ] from the string
-                    System.out.printf("\n%s %s %s %s %s", "--- Reader ID:", readerId, " --- Borrowed Book ID(s):", toPrint, " ---\n");
-                    System.out.println("\nEnter (Y) to CONFIRM or any other to CANCEL:");
-                    input = sc.nextLine();
-                    if (input.equalsIgnoreCase("Y")) {
-                        ReadWriteFile rw = new ReadWriteFile();
-                        // Calls a function to save new returnins to data file, and also calls an function to add new data to Returns ArrayList3
-                        ArrayList<Borrows> borrowsArray = rw.SaveBorrow(reader, booksArray);
-                        sortSearch.addObjectToArray(borrowsArray, null, "Borrow");
-                        System.out.println("-- BORROWING was RECORDED --");
-                    } else {
-                        System.out.println("--- CANCELED by USER ---");
-                    }
-                }}
+                }
             } else {  // Print error message if ID is empty(null)
                 System.out.print(readerId != null ? " --- ID CANNOT BE BLANK ---\n" : "");
             }
@@ -514,7 +515,7 @@ public class UserScreen {
                 if (toReturnBook == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
                     System.out.print("--- ID CANNOT BE BLANK ---\n");
                 } else if (!toReturnInvalid.isBlank()) { //check if toReturnInvalid is not empty or blank // 
-                    System.out.printf("%s %s %s", "\n--- WARNING: INVALID ID >>", toReturnInvalid, "<< ONLY NUMBERS ALLOWED ---\n");
+                    System.out.printf("%s %s %s", "\n--- WARNING: INVALID ID >>", toReturnInvalid, "<< ONLY POSITIVE NUMBERS ALLOWED ---\n");
                 }
 
                 if (toReturnBook != null) {

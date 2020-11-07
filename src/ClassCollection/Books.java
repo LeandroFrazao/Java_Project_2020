@@ -68,12 +68,21 @@ public class Books {
         this.copiesLeft = copiesLeft;
     }
 
-    
+    //to print includes ISBN of the book
+    public String printDetails() {
+        int titleLength = getTitle().length() + 5;
+        int authorLength = getAuthor().length() + 5;
+
+        return String.format("%s %-10s %s %-" + titleLength + "s %10s %-" + authorLength + "s %10s %s %10s %s %10s %s %10s %s %n", "ID:", getId(), "Title:", getTitle(), "Author:", getAuthor(), "ISBN", getIsbn(),
+                "Year:", getYear(), "Copies:", getQuantity(), "Left:", getCopiesLeft());
+
+    }
+
     // create toString contaning all variables
     @Override
     public String toString() {
 
-        return String.format("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %10s %s %10s %s %n", "ID:", getId(), "Title:", getTitle(), "Author:", getAuthor(), "Year:", getYear(), "Copies:", getQuantity(),"Left:",getCopiesLeft());
+        return String.format("%s %-10s %s %-80.80s %10s %-50.50s %10s %s %10s %s %10s %s %n", "ID:", getId(), "Title:", getTitle(), "Author:", getAuthor(), "Year:", getYear(), "Copies:", getQuantity(), "Left:", getCopiesLeft());
     }
 
 }

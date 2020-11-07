@@ -133,7 +133,7 @@ public class ReadWriteFile {
             Borrows borrow = new Borrows(reader, book, formateTime.format(new Date()));
             borrows.add(borrow); // create an object that will be used to "print" the format desired to the file.
         }
-      
+
         try {
             if (!file.exists()) { // if file doesnt exist 
                 fw = new FileWriter(file); // create a file.
@@ -207,11 +207,11 @@ public class ReadWriteFile {
             bw = new BufferedWriter(fw);
             //Borrow file data will be replaced by values from borrowsArray
             bw.write("ReaderID, Date/time, Books ID\n");
-           if (borrowArray!=null){
-            for (Borrows borrow : borrowArray) {
-                bw.write(borrow.toSaveToFile() + "\n");
+            if (borrowArray != null) {
+                for (Borrows borrow : borrowArray) {
+                    bw.write(borrow.toSaveToFile() + "\n");
+                }
             }
-           }
             bw.close();
             fw.close();
 
@@ -220,21 +220,3 @@ public class ReadWriteFile {
         }
     }
 }
-
-/*
-public class ImageReaderExample {
-
-    public static void main(String[] args) {
-     try{
-          BufferedImage image = ImageIO.read(new File("/tmp/input.jpg"));
-
-          image.getGraphics().drawLine(1, 1, image.getWidth()-1, image.getHeight()-1);
-          image.getGraphics().drawLine(1, image.getHeight()-1, image.getWidth()-1, 1);
-
-          ImageIO.write(image, "png", new File("/tmp/output.png"));
-     }
-     catch (IOException e){
-         e.printStackTrace();
-     }
-    }
-}*/

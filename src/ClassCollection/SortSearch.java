@@ -11,15 +11,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SpringLayout;
 
 /**
  *
@@ -39,8 +40,9 @@ public class SortSearch {
     private final ReadWriteFile readWrite;
     private String bookSortedBy = ""; // this variable is used to check if Books array is already sorted by ID, Title or Author. 
     private String readerSortedBy = "";// this variable is used to check if Readers array is already sorted by ID or Name . Readers Array file is NOT sorted.  
-    //constructor - Load books and readers variables
+    private static String OSname = "";
 
+    // constructor
     public SortSearch() {
         // create an object of the class ReadWriterFile
         this.readWrite = new ReadWriteFile();
@@ -55,13 +57,14 @@ public class SortSearch {
         //setting choice to be empty
         this.choice = "";
         loadBooksLeft(); //function to sort books by ID, check borrowed books, and set CopiesLeft inside book
-        
+        this.OSname = System.getProperty("os.name").toLowerCase(Locale.ENGLISH); //get name of Operational System
     }
+
     // this function sort books by ID, then check borrows
-    private void loadBooksLeft(){
+    private void loadBooksLeft() {
         this.choice = "ID";
         checkAndSort("books"); // sort books by id from the begining
-        for (Books book:books){// check each book
+        for (Books book : books) {// check each book
             book.setCopiesLeft(returnNumberOfBooksLeft(book.getId())); // set the variable CopiesLeft by caling a function that returns an integer of books left.
         }
     }
@@ -86,13 +89,17 @@ public class SortSearch {
             searchReaderName(joinName(firstName, lastName)); // it calls a function that sort Readers by Name
         } else if (option.equals("ID")) { //if user decided to sort by ID 
             checkAndSort("readers");//function to check if an array is already sorted by some type
-            if (binarySearchAuthorId(readers, id, 0, readers.size()) == -1) // if function return 0. means that ID wasnt found.
-            {
+            int idReader = (binarySearchAuthorId(readers, id, 0, readers.size()));
+            if (idReader > 0) { // if function return -1. means that ID wasnt found.
+
+                System.out.println(readers.get(idReader));
+            } else {
                 System.out.println("--- ID NOT FOUND ---");
             }
         }
     }
 
+    // function to return total of titles, items (all copies) and total of borrowings
     public int returnTotalOf(String target) {
         if (target.equals("Titles")) { //return total of unique titles
             return books.size();
@@ -104,16 +111,17 @@ public class SortSearch {
             return count;
         } else if (target.equals("BorrowedBooks")) { // return total of borrowed books
             return borrows.size();
-        } 
+        }
 
         return -1;
     }
+
     //return number of specific book id available
-    public int returnNumberOfBooksLeft (int bookId){
-       int count =0;        
+    public int returnNumberOfBooksLeft(int bookId) {
+        int count = 0;
         int indexBook = binarySearchBooksId(books, bookId, 0, books.size()); //return index of specific book id
-       // System.out.println("Index: "+indexBook+"Book ID: "+bookId);
-        if (indexBook<0){
+        // System.out.println("Index: "+indexBook+"Book ID: "+bookId);
+        if (indexBook < 0) {
             System.out.println("Error: Index BOOK is -1");
             return 0;
         }
@@ -127,7 +135,7 @@ public class SortSearch {
         count = total - count;
         return count;
     }
-    
+
     //function to join firstName and lastName, and return a string
     private String joinName(String firstName, String lastName) {
         return firstName + " " + lastName;
@@ -147,7 +155,7 @@ public class SortSearch {
             System.out.println("--- NAME NOT FOUND ---");
         }
     }
-
+    // function to print on screen readers sorted or by name or ID
     public void listSortedtReader(String choice) {
 
         this.choice = choice;// this variable loads the user choice to be used in the compareReader function. 
@@ -264,12 +272,12 @@ public class SortSearch {
             int index = 0;
             for (Books book : books) {
                 int indexBook = binarySearchBooksId(books, book.getId(), 0, books.size());
-                System.out.print(book );
+                System.out.print(book);
                 index++;
             }
         } else if (choice.equals("Author")) {// print sorted array alphabetically by Author
             for (Books book : books) {
-                System.out.print(book );
+                System.out.print(book);
             }
         }
     }
@@ -367,17 +375,18 @@ public class SortSearch {
         ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
         // int counterInvalid = 0;
         String toReturnError = "";
-        String toReturnUnavailable ="";
+        String toReturnUnavailable = "";
         for (int target : ids) {
             int id = binarySearchBooksId(books, target, 0, books.size());
             if (id == -1) {
                 toReturnError += target + ", ";
             } else {
-                if (books.get(id).getCopiesLeft()>0){
+                if (books.get(id).getCopiesLeft() > 0) {
                     tempIds.add(books.get(id));
-                }else{
-                    toReturnUnavailable+= target + ", ";    }
-                
+                } else {
+                    toReturnUnavailable += target + ", ";
+                }
+
             }
         }
         // Print valid books chosen by the user
@@ -385,11 +394,11 @@ public class SortSearch {
             System.out.print(book);
         }
         if (!toReturnUnavailable.isBlank()) {// check if toReturnUnavailable is empty. if not, it print error message on screen.
-            toReturnUnavailable=  toReturnUnavailable.replace("-1, ", "");
+            toReturnUnavailable = toReturnUnavailable.replace("-1, ", "");
             toReturnUnavailable = toReturnUnavailable.substring(0, toReturnUnavailable.length() - 2);// to remove ", " from the end of the string
             System.out.printf("%s %s %s", "--- Book ID:", toReturnUnavailable, "--- NO COPIES AVAILABLE AT THIS MOMENT ---\n");
         }
-        
+
         toReturnError = toReturnError.replace("-1, ", "");
         if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
 
@@ -404,73 +413,6 @@ public class SortSearch {
         return tempIds;
     }
 
-    // Function to return a book, where it is going to check if book exists, then user need to confirm it to be later register in a file.
-    public ArrayList<Borrows> ReturnIdBook(ArrayList<Integer> ids, ArrayList<Borrows> chosenBooks) {
-        if (ids == null) {
-            return null;
-        }
-        ArrayList<Books> tempIds = new ArrayList<>();
-        ArrayList<Borrows> toReturn = new ArrayList<>();
-        List<Borrows> toBefound = new LinkedList<>(chosenBooks);
-
-        this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
-        checkAndSort("books");//function to check if an array is already sorted by some type
-        ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
-        //int counterInvalid = 0;
-        String toReturnError = "";
-        for (int target : ids) {
-            int id = binarySearchBooksId(books, target, 0, books.size());
-            if (id == -1) {
-                toReturnError += target + ", ";
-            } else {
-                tempIds.add(books.get(id));
-            }
-        }
-        if (toReturn != null) {
-            Borrows bookFound = null;
-            for (int i = 0; i < tempIds.size(); i++) {
-                for (Borrows borrow : toBefound) {
-                    //         System.out.println("borrow: "+ borrow.getBook().getId()+" tempids: "+tempIds.get(i).getId());
-                    if (borrow.getBook().getId() == tempIds.get(i).getId()) {
-                        toReturn.add(borrow);
-                        bookFound = borrow;
-
-                    }
-                }
-                if (bookFound != null) {
-                    toBefound.removeAll(toReturn);
-                    i = -1;
-                    bookFound = null;
-                }
-            }
-
-            ArrayList<Integer> notFound = new ArrayList<>(ids);
-            ArrayList<Integer> validBooks = new ArrayList<>();
-            for (Borrows borrow : toReturn) {
-                validBooks.add(borrow.getBook().getId());
-            }
-            //remove all books not found in the borrow array.
-            notFound.removeAll(validBooks);
-            String toAddtoError = notFound.toString();
-            toReturnError += toAddtoError.substring(1, toAddtoError.length() - 1);//to remove ", " from the begin and end of the string
-
-            // Print valid books chosen by the user
-            for (Borrows borrow : toReturn) {
-                System.out.print(borrow.getBook());
-
-            }
-        }
-        if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
-            toReturnError = toReturnError.replace("-1, ", "");//  to remove "-1,", which represent duplicates
-            System.out.printf("%s %s %s", "--- Book ID:", toReturnError, "--- NOT FOUND ---\n");
-        }
-        if (toReturn.size() == 0)// set null if there are no elements in the array ( lenght is 0 )
-        {
-            toReturn = null;
-        }
-        return toReturn;
-    }
-
     // Function check if reader exists
     public Readers checkIdReader(Integer id) {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareReaders function. 
@@ -482,27 +424,29 @@ public class SortSearch {
         System.out.println("--- ID NOT FOUND ---");
         return null;
     }
-    //
-    public ArrayList<Books> checkReaderBorrows(Readers reader, ArrayList<Books> booksArray) {
-        List<Books> tempBooks = new ArrayList<>(booksArray); //variable used to looad books array, and when in a loop, it will be removed books already borrowed by the user
-        String toReturnError="";
+
+    //function to check current borrows of the reader, return array of valid books, and return an error message with book ids that reader has not returned yet.
+    public ArrayList<Books> checkReaderCurrentBorrows(Readers reader, ArrayList<Books> booksArray) {
+        List<Books> tempBooks = new ArrayList<>(booksArray); //variable used to load books array, and when in a loop, it will be removed books already borrowed by the user
+        String toReturnError = "";
         for (Books book : tempBooks) {
             for (Borrows borrow : borrows) {
-                if (borrow.getReader() == reader && borrow.getBook()==book) {
-                    toReturnError+= book.getId() +", "; 
+                if (borrow.getReader() == reader && borrow.getBook() == book) {
+                    toReturnError += book.getId() + ", ";
                     booksArray.remove(book);
                     break;
                 }
             }
         }
         // Print error message if User borrowed the same book and havent returned yet.
-        if (toReturnError!=""){
+        if (toReturnError != "") {
             toReturnError = toReturnError.substring(0, toReturnError.length() - 2); //to remove ", " from the string
-            System.out.printf("%s %s %s", "--- READER HAS NOT RETURNED BORROWED BOOK(s) --- Book ID(s):", toReturnError, "---\n");           
+            System.out.printf("%s %s %s", "--- READER HAS NOT RETURNED BORROWED BOOK(s) --- Book ID(s):", toReturnError, "---\n");
         }
-        if (booksArray.size()==0){
-            return null;}
-        
+        if (booksArray.size() == 0) {
+            return null;
+        }
+
         return booksArray;
     }
 
@@ -527,21 +471,24 @@ public class SortSearch {
     // insertionSort and delete duplicates in the array of selected IDs from the USER
     private ArrayList<Integer> insertSort(ArrayList<Integer> selected) {
 
-        //     int countDuplicate = 0;
+        boolean duplicate = false;
         for (int i = 1; i < selected.size(); i++) {
             int key = selected.get(i);
             int j = i;
             while (j > 0 && selected.get(j - 1) >= key) { // Move elements of array that are greater than key, to one position after their current position  
-                if (key == selected.get(j - 1)) { //compare if there are duplicates
+                if (key == selected.get(j - 1)) { //compare if there are duplicates or value is lower than 0
                     key = -1; // if there is a duplicate, key receive -1, and later is going to be sent to the first position
                 }
                 selected.set(j, selected.get(j - 1));
                 j--;
             }
-//            if (key == -1) { // to count Duplicates
-//                countDuplicate++;
-//            }
+            if (key == -1) { // to count Duplicates
+                duplicate = true;
+            }
             selected.set(j, key);
+        }
+        if (duplicate) {
+            selected.removeIf(((Integer) (-1))::equals); // remove all -1
         }
 
         return selected;
@@ -601,36 +548,35 @@ public class SortSearch {
         return false;
     }
 
-    public ArrayList<Borrows> checkReaderBorrow(ArrayList<Borrows> toReturn, ArrayList<Books> booksArray) {
+    // function to if books 
+    public ArrayList<Borrows> checkReaderBorrow(ArrayList<Borrows> borrowArray, ArrayList<Books> booksArray) {
 
-        ArrayList<Borrows> tempToReturn = new ArrayList<Borrows>();
+        ArrayList<Borrows> toReturnBorrow = new ArrayList<Borrows>();
 
-        for (int i = 0; i < toReturn.size(); i++) {
+        for (int i = 0; i < borrowArray.size(); i++) {
             for (int j = 0; j < booksArray.size(); j++) {
-                if (toReturn.get(i).getBook() == booksArray.get(j)) {
-                    tempToReturn.add(toReturn.get(i));
-                }// else {
-
-                // }
+                if (borrowArray.get(i).getBook() == booksArray.get(j)) {
+                    toReturnBorrow.add(borrowArray.get(i));
+                }
             }
-            if (tempToReturn.size() == 0) {
+            if (toReturnBorrow.size() == 0) {
                 System.out.print("--- ID CANNOT BE BLANK ---\n");
             }
         }
-        return tempToReturn;
+        return toReturnBorrow;
     }
 
-    //Function used to return a list of 2 Arrays
+    //Function used to return a list of 2 ArrayList
     private List returnValidInvalidBorrows(ArrayList<Books> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
 
-    //Function used to return a list of 2 Arrays
+    //Function used to return a list of 2 ArrayList
     private List returnValidInvalidReturns(ArrayList<Borrows> valid, String invalid) {
         return Arrays.asList(valid, invalid);
     }
 
-    // Check valid and invalid input from the USER
+    //function to check input, treat possible erros, and return array of valid books and array of invalid book ids
     public List checkBookIDBorrow(String input) {
         ArrayList<Integer> booksId = new ArrayList<>();  // variable to keep books IDs chosen by the user
         ArrayList<Books> booksArray = new ArrayList<>();
@@ -659,16 +605,21 @@ public class SortSearch {
         return returnValidInvalidBorrows(booksArray, toReturnInvalid); //used returnValidInvalid function to return list of 2 arrays.
     }
 
+    //function to check input, treat possible erros, and return array of valid borrows to be return and array of invalid book ids
     public List checkBookIDReturn(String input, ArrayList<Borrows> chosenBooks) {
-        ArrayList<Integer> booksId = new ArrayList<>();  // variable to keep books IDs chosen by the user
-        ArrayList<Borrows> booksArray = new ArrayList<>();
+        ArrayList<Integer> booksId = new ArrayList<>();  // array to keep books IDs chosen by the user
+        ArrayList<Borrows> booksArray = new ArrayList<>(); // array of Borrows that is going to get valid Borrows.
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
-
+        ArrayList<Integer> negInput = new ArrayList<>();  // array to keep input values lower than zero
         String toReturnInvalid = ""; // variable to record invalid entries.
-        int i = 0;
         for (String id : selectedId) {
             try {
-                booksId.add(Integer.parseInt(id));// booksId.add( Integer.parseInt(id));
+                int tempId = (Integer.parseInt(id));// variable receives int, and catch a number format exception, if it's not int.
+                if (tempId > 0) {
+                    booksId.add(tempId);// add integer to array
+                } else {
+                    negInput.add(tempId * -1); // all values lower than one is not valid, and store in array to return as an error
+                }
             } catch (NumberFormatException ex) { //if user entered characters than numbers.
                 if (booksId.size() == 0)// set null if there are no elements in the array ( lenght is 0 )
                 {
@@ -677,21 +628,94 @@ public class SortSearch {
                 if (id.isBlank()) { //include empty to the string input if id is empty
                     id = "EMPTY";
                 }
-                toReturnInvalid += id + ", "; // append invalid id
+                toReturnInvalid += id + ", "; // append invalid book id
             }
         }
-
-        //check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reduced by deleting undesirable characteres in the end of the string
-        toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid.substring(0, toReturnInvalid.length() - 2) : "";
-        booksArray = (ReturnIdBook(booksId, chosenBooks)); // call function that gonna sort, remove duplicates, and return valid IDs;  
+        if (negInput.size() != 0) {
+            negInput = insertSort(negInput); //sort, and remove duplicates and return -1 to duplicates           
+            String numberInvalid = negInput.stream().map(i -> i * (-1)).collect(Collectors.toList()).toString();   // convert the array to negative numbers again.          
+            toReturnInvalid += numberInvalid.substring(1, numberInvalid.length() - 1);
+        }
+        //check if toReturnInvalid isnt Blank, otherwise return empty;
+        toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid : "";
+        booksArray = (ReturnIdBook(booksId, chosenBooks)); // call function that gonna sort, remove duplicates, and return an array of Borrows with valid IDs;  
 
         return returnValidInvalidReturns(booksArray, toReturnInvalid); //used returnValidInvalid function to return list of 2 arrays.
     }
 
+    // Function to return an array of borrows, where it is going to check books that user has chosen, if books exist and remove duplicates, and print on screen possible errors
+    public ArrayList<Borrows> ReturnIdBook(ArrayList<Integer> ids, ArrayList<Borrows> chosenBooks) {
+        if (ids == null) {
+            return null;
+        }
+        ArrayList<Books> tempIds = new ArrayList<>(); // array to store ids of valid books.
+        ArrayList<Borrows> toReturn = new ArrayList<>(); //array  to store borrows that the user has choosen.
+        List<Borrows> toBefound = new LinkedList<>(chosenBooks); // Linked array that receives an array of chosen books from the user
+
+        this.choice = "ID"; // this variable loads the user choice to be used in the compareStringBooks function. 
+        checkAndSort("books");//function to check if an array is already sorted by some type
+        ids = insertSort(ids); // sort selected book IDs chosen from the User and remove duplicates.
+
+        String toReturnError = "";
+        //loop to check if books exist or not.
+        for (int target : ids) {
+            int id = binarySearchBooksId(books, target, 0, books.size()); // function return book id, or return -1 if book wasnt found.
+            if (id == -1) {
+                toReturnError += target + ", "; // store invalid ids of books that were not found.
+            } else {
+                tempIds.add(books.get(id));// to store ids of valid books.
+            }
+        }
+        //  if (tempIds.size() != 0) {
+        Borrows bookFound = null;
+        //loop to separate choosen books ids from the list of borrows
+        for (int i = 0; i < tempIds.size(); i++) {
+            for (Borrows borrow : toBefound) { // every time a book from the chosen borrow is found, the array toBeFound descreases its size. (Linked list permited to do that while iterating)
+                if (borrow.getBook().getId() == tempIds.get(i).getId()) {
+                    toReturn.add(borrow);  // to store borrows that the user has choosen.
+                    bookFound = borrow;
+                }
+            }
+            if (bookFound != null) {
+                toBefound.removeAll(toReturn); // to remove from the array of borrows, all boorrows that were chosen by the user.
+                i = -1; // everytime a book is found, it is necessary to start the loop from the begining.
+                bookFound = null;
+            }
+        }
+
+        ArrayList<Integer> notFound = new ArrayList<>(ids);
+        ArrayList<Integer> validBooks = new ArrayList<>();
+        for (Borrows borrow : toReturn) {
+            validBooks.add(borrow.getBook().getId());
+        }
+        //remove all books not found in the borrow array.
+        notFound.removeAll(validBooks);
+        String toAddtoError = notFound.toString();
+        toReturnError += toAddtoError.substring(1, toAddtoError.length() - 1);//to remove "[ ]" from the begin and end of the string
+
+        // Print valid books chosen by the user
+        for (Borrows borrow : toReturn) {
+            System.out.print(borrow.getBook());
+
+        }
+        //    } else
+        //       toReturnError = toReturnError.substring(0, toReturnError.length() - 2);
+        if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
+            toReturnError = toReturnError.replace("-1, ", "");//  to remove "-1,", which represent duplicates
+            System.out.printf("%s %s %s", "--- Book ID:", toReturnError, "--- NOT FOUND ---\n");
+        }
+        if (toReturn.size() == 0)// set null if there are no elements in the array ( lenght is 0 )
+        {
+            toReturn = null;
+        }
+        return toReturn;
+    }
+
+    // Function to get borrows from a specific reader and show books id of borrows on screen, then user choose one or more to be returned.  
     public ArrayList<Borrows> listBorrowBooksToReturn(Readers reader) {
-        ArrayList<Integer> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books, so the user can choose to be returned.
-        ArrayList<Borrows> listBorrowsToReturn = new ArrayList<>();
-        
+        ArrayList<Integer> listToReturn = new ArrayList<>(); // temporary array that it will store list of borrow books to be shown on screen, so the user can choose one or more to be returned.
+        ArrayList<Borrows> listBorrowsToReturn = new ArrayList<>();// array of borrows that contains borrows of specific reader.
+
         for (Borrows borrow : borrows) {
             if (borrow.getReader() == reader) {
                 listBorrowsToReturn.add(borrow);
@@ -699,17 +723,16 @@ public class SortSearch {
             }
         }
         //function to sort array of integer
-        insertSort(listToReturn);
+        listToReturn = insertSort(listToReturn);
         String toReturnBooks = listToReturn.toString();
         toReturnBooks = toReturnBooks.substring(1, toReturnBooks.length() - 1); // to remove "[ ]" of the string 
-        
+
         System.out.print(toReturnBooks + "\n");
         return listBorrowsToReturn;
     }
 
     // function to print list of All returning books or returning books from a specific reader ID
     public Integer[] listReturnBooks(String target, int readerId) {
-
         if (target.equals("ALL")) { // print list of all borrowed books 
             if (returns.size() == 0) {
                 System.out.println("--- NO RETURNINGS FOUND ---");
@@ -731,13 +754,15 @@ public class SortSearch {
                 System.out.println("--- Reader ID NOT FOUND ---");
             }
         }
-        return null; // return null if the choice is not OnlyBook
+        return null; 
     }
 
+    // function to update Borrows and Returns array. Also update number of books left.
     public void addObjectToArray(ArrayList<Borrows> borrowList, ArrayList<Returns> returnList, String target) {
         if (target.equals("Borrow")) {
+            //update array of borrowings
             for (Borrows borrow : borrowList) {
-                borrow.getBook().setCopiesLeft(borrow.getBook().getCopiesLeft()-1);
+                borrow.getBook().setCopiesLeft(borrow.getBook().getCopiesLeft() - 1);
                 borrows.add(borrow);
             }
         } else if (target.equals("Return")) {
@@ -750,34 +775,36 @@ public class SortSearch {
             } else {
                 rw.updateBorrow(null);
             }
-
+            // update array of returns
             for (Returns retBook : returnList) {
-                retBook.getBook().setCopiesLeft(retBook.getBook().getCopiesLeft()+1);
+                retBook.getBook().setCopiesLeft(retBook.getBook().getCopiesLeft() + 1);
                 returns.add(retBook);
             }
         }
 
     }
 
+    // function to show more details of a book by ID, and show its cover.
     public void showBookCover(int bookId) {
         try {
-
             bookId = (binarySearchBooksId(books, bookId, 0, books.size()));
             if (bookId != -1) {
-                URL imageURL = new URL(books.get(bookId).getImageUrl());
-                java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(imageURL);
-                JFrame frame = new JFrame();
-                frame.setVisible(true);
-                frame.toFront();
-                JLabel label = new JLabel(new ImageIcon(image));
-                JPanel panel = new JPanel();
-                panel.add(label);
-                frame.toFront();
-                JScrollPane scrollPane = new JScrollPane(panel);
-                frame.toFront();
-                JOptionPane.showMessageDialog(null, scrollPane);
-                frame.setVisible(false);
-                frame.dispose(); // to be destroyed and cleaned up 
+                System.out.println(books.get(bookId).printDetails());
+                if (!OSname.contains("nix") && !OSname.contains("nux")) {  // check if Operational system is linux. (if it runs in Docker, need to be checked, or the app will crash)
+                    URL imageURL = new URL(books.get(bookId).getImageUrl());
+                    java.awt.Image image = java.awt.Toolkit.getDefaultToolkit().createImage(imageURL); //get the image from a link on the internet. 
+                    JFrame frame = new JFrame();
+                    JLabel label = new JLabel(new ImageIcon(image)); // load the image to a label
+                    JPanel panel = new JPanel();
+                    panel.add(label); //add the label to a panel
+                    frame.add(panel); // add the panel to a frame
+                    frame.setAlwaysOnTop(true); // set the frame to be on top
+                    frame.toFront(); //bring frame to top
+                    JOptionPane.showMessageDialog(frame, panel, books.get(bookId).getTitle(), JOptionPane.PLAIN_MESSAGE); // create a messagebox to show the image                
+                    frame.dispose(); // to be destroyed and cleaned up 
+                } else {
+                    System.out.println("--- Sorry, the cover couldn't be shown. Your system does not support this feature. ---");
+                }
             } else {
                 System.out.println("--- ID INVALID ---\n");
             }
