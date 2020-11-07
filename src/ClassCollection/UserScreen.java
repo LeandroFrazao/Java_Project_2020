@@ -19,7 +19,7 @@ public class UserScreen {
     private int option;  // variable to keep the last valid choice by the user 
     private int parentOption; //// variable to keep the pareent of the screen chosen by the user.
     private boolean invalid;  // variable created to treat user errors
-    private final DataControl sortSearch; // created the object of sortSearch class
+    private final DataControl dataControl; // created the object of sortSearch class
 
 //construtor
     public UserScreen() {
@@ -28,7 +28,7 @@ public class UserScreen {
         this.option = 0;
         this.parentOption = 0;
         this.invalid = false;
-        sortSearch = new DataControl();
+        dataControl = new DataControl();
 
     }
 
@@ -214,9 +214,9 @@ public class UserScreen {
     private void mainScreen() {
         System.out.println("( 0 ) Main Screen");
         System.out.println("\n------------------ Welcome to Dublin Library System ------------------ \n");
-        int catalog = sortSearch.returnTotalOf("Titles");
-        int items = sortSearch.returnTotalOf("Items");
-        int borrowings = sortSearch.returnTotalOf("BorrowedBooks");
+        int catalog = dataControl.returnTotalOf("Titles");
+        int items = dataControl.returnTotalOf("Items");
+        int borrowings = dataControl.returnTotalOf("BorrowedBooks");
         System.out.printf("%s %-5s %s %-7s %s %-7s %s %-5s %n%n", "--- Catalog:", catalog, "Items:", items, "Available:", items - borrowings, "Borrowings:", borrowings + " ---");
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Books");
@@ -257,7 +257,7 @@ public class UserScreen {
 
             System.out.printf("%20.20s %n", "-- Result --");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
-            sortSearch.searchBook(title, author);
+            dataControl.searchBook(title, author);
         } else {
 
             System.out.println("--- Both  Title and Author cannot be blank ---\n");
@@ -278,7 +278,7 @@ public class UserScreen {
         try {
             String input = sc.nextLine();
             id = (!input.isBlank() ? Integer.parseInt(input) : -1); // if input is blank, id = -1, othewise if it's not numeric, it catchs an error, and will show error message to the user
-            sortSearch.showBookCover(id);
+            dataControl.showBookCover(id);
         } catch (NumberFormatException ex) {
             System.out.println("--- ID INVALID ---\n");
         }
@@ -294,7 +294,7 @@ public class UserScreen {
     private void sortBookScreen(int option, String target) {
         System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Book by " + target + "\n");
         System.out.printf("%20.20s %n", "-- Result --\n");
-        sortSearch.listSortedtBook(target);
+        dataControl.listSortedtBook(target);
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("5 - Return to Books Screen");
         System.out.println("9 - Exit");
@@ -340,11 +340,11 @@ public class UserScreen {
 
             System.out.printf("%20.20s %n", "-- Result --\n");
             // call the sortSearch function to search or Author or Title or both, according to the user decision.
-            sortSearch.searchReader(firstName, lastName, id, target);
+            dataControl.searchReader(firstName, lastName, id, target);
 
         } else if (id > 0) {
             System.out.printf("%20.20s %n", "-- Reader --");
-            sortSearch.searchReader(firstName, lastName, id, target);
+            dataControl.searchReader(firstName, lastName, id, target);
         } else {  // Print error message if user didnt type firstName or lastName,                                    id is -1 if user enter blank space  
             System.out.print((target.equals("Name") ? "--- Both  First Name and Last Name cannot be blank ---\n" : id == -1 ? " --- ID cannot be blank ---\n" : id != 0 ? " --- ID INVALID ---\n" : ""));
         }
@@ -361,7 +361,7 @@ public class UserScreen {
 
         System.out.println("\n( " + String.valueOf(option).charAt(0) + "." + String.valueOf(option).charAt(1) + " ) Sort Reader by " + target + "\n");
         System.out.printf("%20.20s %n", "-- Result --");
-        sortSearch.listSortedtReader(target);
+        dataControl.listSortedtReader(target);
         System.out.println("Select one of the options bellow:\n");
         System.out.println("\n0 - Return to Main Screen");
         System.out.println("5 - Return to Reader Screen");
@@ -390,7 +390,7 @@ public class UserScreen {
         System.out.println("Enter the Book ID: <Enter more than one ID separated by empty space>");
         String input = sc.nextLine(); //get a string from the user
         System.out.printf("%n %20.20s %n", "-- Book(s) --");
-        List list = sortSearch.checkBookIDBorrow(input); // call function to delete all invalid input, then sort, remove duplicates, and return a List with an Array of valid IDs, and String of Invalid inputs.
+        List list = dataControl.checkBookIDBorrow(input); // call function to delete all invalid input, then sort, remove duplicates, and return a List with an Array of valid IDs, and String of Invalid inputs.
         booksArray = (ArrayList<Books>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;
         String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
         if (booksArray == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
@@ -410,10 +410,10 @@ public class UserScreen {
                 System.out.println("--- ID INVALID ---\n");
             }
             if (readerId != null && readerId > 0) {
-                Readers reader = sortSearch.checkIdReader(readerId); // call function check id reader is valid, and return reader
+                Readers reader = dataControl.checkIdReader(readerId); // call function check id reader is valid, and return reader
                 System.out.println(reader);
                 if (reader != null) {
-                    if (sortSearch.checkReaderCurrentBorrows(reader, booksArray) != null) {
+                    if (dataControl.checkReaderCurrentBorrows(reader, booksArray) != null) {
                         String toPrint = "";
                         for (Books book : booksArray) {
                             toPrint += book.getId() + ", ";
@@ -426,7 +426,7 @@ public class UserScreen {
                             ReadWriteFile rw = new ReadWriteFile();
                             // Calls a function to save new returnins to data file, and also calls an function to add new data to Returns ArrayList3
                             ArrayList<Borrows> borrowsArray = rw.SaveBorrow(reader, booksArray);
-                            sortSearch.addObjectToArray(borrowsArray, null, "Borrow");
+                            dataControl.addObjectToArray(borrowsArray, null, "Borrow");
                             System.out.println("-- BORROWING was RECORDED --");
                         } else {
                             System.out.println("--- CANCELED by USER ---");
@@ -459,12 +459,12 @@ public class UserScreen {
                 System.out.println("--- ID INVALID ---\n");
             }
             if (readerId != -1) {
-                sortSearch.listBorrowBooks(target, readerId); // list borrowings
+                dataControl.listBorrowBooks(target, readerId); // list borrowings
             } else {
                 System.out.println("--- ID CANNOT BE BLANK ---");
             }
         } else if (target.equals("ALL")) {
-            sortSearch.listBorrowBooks(target, readerId); // list borrowings
+            dataControl.listBorrowBooks(target, readerId); // list borrowings
         }
         System.out.println("\n0 - Return to Main Screen");
         System.out.print(target.equals("ID") ? "1 - Consult another Reader\n" : "");
@@ -500,15 +500,15 @@ public class UserScreen {
             System.out.println("--- ID INVALID ---\n");
         }
         if (readerId != null && readerId > 0) {
-            Readers reader = sortSearch.ReturnReader(readerId);// function check there is the id reader in the borrow array and return reader.
+            Readers reader = dataControl.ReturnReader(readerId);// function check there is the id reader in the borrow array and return reader.
             if (reader != null) {
                 System.out.println("-- List of Borrowed BOOK ID(s) --");
-                ArrayList<Borrows> toReturnBook = sortSearch.listBorrowBooksToReturn(reader);  // call function to join all the borrow book IDs from a specific user and return a integer array
+                ArrayList<Borrows> toReturnBook = dataControl.listBorrowBooksToReturn(reader);  // call function to join all the borrow book IDs from a specific user and return a integer array
 
                 System.out.println("\nEnter the Book ID to RETURN: <Enter more than one ID separated by empty space>");
                 input = sc.nextLine();
                 System.out.printf("%20.20s %n", "-- Book(s) --");
-                List list = sortSearch.checkBookIDReturn(input, toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
+                List list = dataControl.checkBookIDReturn(input, toReturnBook);// check user input and return an array wiht valid book ids and invalid input                
                 toReturnBook = (ArrayList<Borrows>) list.get(0);  // position 0 of the List returns a Integer Array with Valid input;               
 
                 String toReturnInvalid = list.get(1).toString(); // position 1 of the List returns a String with invalid input;               
@@ -531,7 +531,7 @@ public class UserScreen {
                     if (input.equalsIgnoreCase("Y")) {
                         ReadWriteFile rw = new ReadWriteFile();
                         ArrayList<Returns> toReturnArray = rw.SaveReturn(toReturnBook); // Call a function to save new returnins to data file,
-                        sortSearch.addObjectToArray(toReturnBook, toReturnArray, "Return"); // Call an function to update Returns ArrayList with the new entries.                         
+                        dataControl.addObjectToArray(toReturnBook, toReturnArray, "Return"); // Call an function to update Returns ArrayList with the new entries.                         
                         System.out.println("-- RETURNING was RECORDED --");
                     } else {
                         System.out.println("--- CANCELED by USER ---");
@@ -564,12 +564,12 @@ public class UserScreen {
                 System.out.println("--- ID INVALID ---\n");
             }
             if (readerId != -1) {
-                sortSearch.listReturnBooks(target, readerId); // list returnings of an Id reader
+                dataControl.listReturnBooks(target, readerId); // list returnings of an Id reader
             } else {
                 System.out.println("--- ID CANNOT BE BLANK ---");
             }
         } else if (target.equals("ALL")) {
-            sortSearch.listReturnBooks(target, readerId); // list all returning
+            dataControl.listReturnBooks(target, readerId); // list all returning
         }
         System.out.println("\n0 - Return to Main Screen");
         System.out.print(target.equals("ID") ? "1 - Consult another Reader\n" : "");
