@@ -524,13 +524,17 @@ public class DataControl {
 
     // Function to check if User borrowed a book
     public Readers ReturnReader(Integer readerId) {
-        for (Borrows borrow : borrows) {
-            if (borrow.getReader().getId() == readerId) {
-                System.out.println(borrow.getReader());
-                return borrow.getReader();
+        Readers reader = checkIdReader(readerId); // check if reader Id is valid.  return null if id is not found, and print error on screen
+        if (reader != null) {
+            for (Borrows borrow : borrows) {
+                if (borrow.getReader().getId() == reader.getId()) {
+                    System.out.println(borrow.getReader());
+                    return borrow.getReader();
+                }
             }
+            System.out.println("--- ID " + readerId + " HAS NO BORROWED BOOKS ---");
         }
-        System.out.println("--- ID " + readerId + " HAS NOT BORROWED A BOOK YET ---");
+
         return null;
     }
 
