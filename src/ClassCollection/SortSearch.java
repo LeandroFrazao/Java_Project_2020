@@ -20,7 +20,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 /**
  *
@@ -419,7 +418,7 @@ public class SortSearch {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareReaders function. 
         checkAndSort("readers");//function to check if an array is already sorted by some type
         id = binarySearchAuthorId(readers, id, 0, readers.size());
-        if (id != 0) { // if function return true. means that ID was found.
+        if (id > 0) { // if function return greater than 0. means that ID was found.
             return readers.get(id);
         }
         System.out.println("--- ID NOT FOUND ---");
@@ -508,14 +507,17 @@ public class SortSearch {
             }
         } else if (target.equals("ID")) {// // print list of borrowed books by Reader ID
             boolean found = false;
-            for (Borrows borrow : borrows) {
-                if (borrow.getReader().getId() == readerId) {
-                    found = true;
-                    System.out.print(borrow.listBorrowingID());
+            Readers reader = checkIdReader(readerId); // check if reader Id is valid.  return null if id is not found, and print error on screen
+            if (reader != null) {
+                for (Borrows borrow : borrows) {
+                    if (borrow.getReader().getId() == reader.getId()) {
+                        found = true;
+                        System.out.print(borrow.listBorrowingID());
+                    }
                 }
-            }
-            if (!found) {
-                System.out.println("--- Reader HAS NO BORROWED BOOKS ---");
+                if (!found) {
+                    System.out.println("--- Reader HAS NO BORROWED BOOKS ---");
+                }
             }
         }
     }
@@ -677,7 +679,7 @@ public class SortSearch {
                 tempIds.add(books.get(id));// to store ids of valid books.
             }
         }
-        //  if (tempIds.size() != 0) {
+
         Borrows bookFound = null;
         //loop to separate choosen books ids from the list of borrows
         for (int i = 0; i < tempIds.size(); i++) {
@@ -709,8 +711,6 @@ public class SortSearch {
             System.out.print(borrow.getBook());
 
         }
-        //    } else
-        //       toReturnError = toReturnError.substring(0, toReturnError.length() - 2);
         if (!toReturnError.isBlank()) {// check if toReturnError is empty. if not, it print error message on screen.
             toReturnError = toReturnError.replace("-1, ", "");//  to remove "-1,", which represent duplicates
             System.out.printf("%s %s %s", "--- Book ID:", toReturnError, "--- NOT FOUND ---\n");

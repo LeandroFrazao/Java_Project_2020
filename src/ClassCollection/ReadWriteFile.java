@@ -62,7 +62,7 @@ public class ReadWriteFile {
         } else {
             try {
                 if (file.equals("borrows.csv")) {
-                    //readers file is sorted already
+                    //readers file is sorted by ID already
                     int idReader = SortSearch.binarySearchAuthorId(readers, Integer.parseInt(data[0]), 0, readers.size());
                     int idBook = SortSearch.binarySearchBooksId(books, Integer.parseInt(data[1]), 0, books.size());
                     Borrows borrow = new Borrows(readers.get(idReader), books.get(idBook), data[2]);
