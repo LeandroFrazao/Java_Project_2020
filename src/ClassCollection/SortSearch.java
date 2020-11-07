@@ -155,6 +155,7 @@ public class SortSearch {
             System.out.println("--- NAME NOT FOUND ---");
         }
     }
+
     // function to print on screen readers sorted or by name or ID
     public void listSortedtReader(String choice) {
 
@@ -583,7 +584,7 @@ public class SortSearch {
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
         String toReturnInvalid = ""; // variable to record invalid entries.
         ArrayList<Integer> negInput = new ArrayList<>();  // array to keep input values lower than zero
-        
+
         for (String id : selectedId) {
             try {
                 int tempId = (Integer.parseInt(id));// variable receives int, and catch a number format exception, if it's not int.
@@ -608,7 +609,7 @@ public class SortSearch {
             String numberInvalid = negInput.stream().map(i -> i * (-1)).collect(Collectors.toList()).toString();   // convert the array to negative numbers again.          
             toReturnInvalid += numberInvalid.substring(1, numberInvalid.length() - 1);
         }
-       //check if toReturnInvalid isnt Blank, otherwise return empty;
+        //check if toReturnInvalid isnt Blank, otherwise return empty;
         toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid : "";
         booksArray = (BorrowIdBook(booksId)); // call function that gonna sort, remove duplicates, and return valid IDs;  
 
@@ -764,7 +765,7 @@ public class SortSearch {
                 System.out.println("--- Reader ID NOT FOUND ---");
             }
         }
-        return null; 
+        return null;
     }
 
     // function to update Borrows and Returns array. Also update number of books left.
