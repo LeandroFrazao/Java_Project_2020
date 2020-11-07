@@ -514,7 +514,7 @@ public class SortSearch {
                 }
             }
             if (!found) {
-                System.out.println("--- Reader ID NOT FOUND ---");
+                System.out.println("--- Reader HAS NO BORROWED BOOKS ---");
             }
         }
     }
@@ -582,11 +582,16 @@ public class SortSearch {
         ArrayList<Books> booksArray = new ArrayList<>();
         String[] selectedId = input.split(" "); //if user add more than one ID separed by space, it is going to create an array containing these IDs
         String toReturnInvalid = ""; // variable to record invalid entries.
-
+        ArrayList<Integer> negInput = new ArrayList<>();  // array to keep input values lower than zero
+        
         for (String id : selectedId) {
             try {
-
-                booksId.add(Integer.parseInt(id));// booksId.add( Integer.parseInt(id));
+                int tempId = (Integer.parseInt(id));// variable receives int, and catch a number format exception, if it's not int.
+                if (tempId > 0) {
+                    booksId.add(tempId);// add integer to array
+                } else {
+                    negInput.add(tempId * -1); // all values lower than one is not valid, and store in array to return as an error
+                }
             } catch (NumberFormatException ex) { //if user entered characters than numbers.
                 if (booksId.size() == 0)// set null if there are no elements in the array ( lenght is 0 )
                 {
@@ -595,11 +600,16 @@ public class SortSearch {
                 if (id.isBlank()) { //include empty to the string input if id is empty
                     id = "EMPTY";
                 }
-                toReturnInvalid += id + ", "; // append invalid id
+                toReturnInvalid += id + ", "; // append invalid book id
             }
         }
-        //check if toReturnInvalid isnt Blank, then the lenght of the string toReturnInvalid is reduced by deleting undesirable characteres in the end of the string
-        toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid.substring(0, toReturnInvalid.length() - 2) : "";
+        if (negInput.size() != 0) {
+            negInput = insertSort(negInput); //sort, and remove duplicates and return -1 to duplicates           
+            String numberInvalid = negInput.stream().map(i -> i * (-1)).collect(Collectors.toList()).toString();   // convert the array to negative numbers again.          
+            toReturnInvalid += numberInvalid.substring(1, numberInvalid.length() - 1);
+        }
+       //check if toReturnInvalid isnt Blank, otherwise return empty;
+        toReturnInvalid = !toReturnInvalid.isBlank() ? toReturnInvalid : "";
         booksArray = (BorrowIdBook(booksId)); // call function that gonna sort, remove duplicates, and return valid IDs;  
 
         return returnValidInvalidBorrows(booksArray, toReturnInvalid); //used returnValidInvalid function to return list of 2 arrays.

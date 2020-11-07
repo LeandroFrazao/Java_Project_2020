@@ -396,7 +396,7 @@ public class UserScreen {
         if (booksArray == null && toReturnInvalid.equals("EMPTY")) { //if user entered empty data
             System.out.print("--- ID CANNOT BE BLANK ---\n");
         } else if (!toReturnInvalid.isBlank()) { //check if toReturnInvalid is not empty or blank // 
-            System.out.printf("%s %s %s", "\n--- WARNING: INVALID ID >>", toReturnInvalid, "<< ONLY NUMBERS ALLOWED ---\n");
+            System.out.printf("%s %s %s", "\n--- WARNING: INVALID ID >>", toReturnInvalid, "<< ONLY POSTIVE NUMBERS ALLOWED ---\n");
         }
         if (booksArray != null) {
 
