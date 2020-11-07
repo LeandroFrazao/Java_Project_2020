@@ -19,7 +19,7 @@ public class UserScreen {
     private int option;  // variable to keep the last valid choice by the user 
     private int parentOption; //// variable to keep the pareent of the screen chosen by the user.
     private boolean invalid;  // variable created to treat user errors
-    private final SortSearch sortSearch; // created the object of sortSearch class
+    private final DataControl sortSearch; // created the object of sortSearch class
 
 //construtor
     public UserScreen() {
@@ -28,7 +28,7 @@ public class UserScreen {
         this.option = 0;
         this.parentOption = 0;
         this.invalid = false;
-        sortSearch = new SortSearch();
+        sortSearch = new DataControl();
 
     }
 

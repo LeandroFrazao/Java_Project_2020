@@ -25,7 +25,7 @@ import javax.swing.JPanel;
  *
  * @author Leand
  */
-public class SortSearch {
+public class DataControl {
 
     //This variable carries choice made by the user.
     private String choice;
@@ -42,7 +42,7 @@ public class SortSearch {
     private static String OSname = "";
 
     // constructor
-    public SortSearch() {
+    public DataControl() {
         // create an object of the class ReadWriterFile
         this.readWrite = new ReadWriteFile();
         // call method to load "books" data from the file
@@ -820,7 +820,7 @@ public class SortSearch {
                 System.out.println("--- ID INVALID ---\n");
             }
         } catch (MalformedURLException ex) {
-            Logger.getLogger(SortSearch.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataControl.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
