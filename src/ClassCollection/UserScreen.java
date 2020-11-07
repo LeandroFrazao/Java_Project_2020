@@ -373,7 +373,7 @@ public class UserScreen {
 
         System.out.println("\n( 3 ) Borrowing Screen\n");
         System.out.println("Select one of the options bellow:\n");
-        System.out.println("1 - Borrowing Book(s)");
+        System.out.println("1 - To Borrow Book(s)");
         System.out.println("2 - List of Borrowed books by USER ID");
         System.out.println("3 - List of all Borrowed books");
         System.out.println("0 - Return to Main Screen");
@@ -386,7 +386,7 @@ public class UserScreen {
 
         Scanner sc = new Scanner(System.in);
         ArrayList<Books> booksArray = new ArrayList<>();  // variable to keep books IDs chosen by the user
-        System.out.println("\n( 3.1 ) Borrowing Book Screen\n");
+        System.out.println("\n( 3.1 ) To Borrow Book - Screen\n");
         System.out.println("Enter the Book ID: <Enter more than one ID separated by empty space>");
         String input = sc.nextLine(); //get a string from the user
         System.out.printf("%n %20.20s %n", "-- Book(s) --");
@@ -439,7 +439,7 @@ public class UserScreen {
         }
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
-        System.out.println("1 - Borrow another book");
+        System.out.println("1 - To Borrow another book(s)");
         System.out.println("5 - Return to Borrowing Screen");
         System.out.println("9 - Exit");
     }
@@ -474,11 +474,11 @@ public class UserScreen {
 
     // Returning Screen
     private void returningScreen() {
-        System.out.println("\n( 4 ) Returning Book Screen\n");
+        System.out.println("\n( 4 ) To Return Book Screen\n");
         System.out.println("Select one of the options bellow:\n");
-        System.out.println("1 - Returning Book(s)");
+        System.out.println("1 - To Return Book(s)");
         System.out.println("2 - List of Returned books by USER ID");
-        System.out.println("3 - List of all Returning books");
+        System.out.println("3 - List of all Returned books");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
     }
@@ -489,7 +489,7 @@ public class UserScreen {
 
         Scanner sc = new Scanner(System.in);
         String input = "";
-        System.out.println("\n( 4.1 ) Returning Book Screen\n");
+        System.out.println("\n( 4.1 ) To Return Book Screen\n");
         System.out.println("Enter the Reader ID:");
         Integer readerId = null; // create to keep readersId chosen by the user
         try {
@@ -532,7 +532,7 @@ public class UserScreen {
                         ReadWriteFile rw = new ReadWriteFile();
                         ArrayList<Returns> toReturnArray = rw.SaveReturn(toReturnBook); // Call a function to save new returnins to data file,
                         dataControl.addObjectToArray(toReturnBook, toReturnArray, "Return"); // Call an function to update Returns ArrayList with the new entries.                         
-                        System.out.println("-- RETURNING was RECORDED --");
+                        System.out.println("-- RETURN was RECORDED --");
                     } else {
                         System.out.println("--- CANCELED by USER ---");
                     }
@@ -544,7 +544,7 @@ public class UserScreen {
 
         System.out.println("\nSelect one of the options bellow:");
         System.out.println("\n0 - Return to Main Screen");
-        System.out.println("1 - Return another book");
+        System.out.println("1 - To Return another book(s)");
         System.out.println("5 - Return to Returning Screen");
         System.out.println("9 - Exit");
     }
