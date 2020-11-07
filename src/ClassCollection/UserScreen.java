@@ -306,8 +306,8 @@ public class UserScreen {
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Search a Reader by Name and/or Surname");
         System.out.println("2 - Search a Reader by ID");
-        System.out.println("3 - List all Readers (Ascendent Name)");
-        System.out.println("4 - List all Readers (Ascendent ID)");
+        System.out.println("3 - List all Readers - Ascendent Name");
+        System.out.println("4 - List all Readers - Ascendent ID");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
     }
