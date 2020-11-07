@@ -234,8 +234,8 @@ public class UserScreen {
         System.out.println("\n( 1 ) Book Screen:\n");
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Search a Book by Title and/or Author");
-        System.out.println("2 - List all Books (Ascendent Titles)");
-        System.out.println("3 - List all Books (Ascendent Authors)");
+        System.out.println("2 - List all Books - Ascendent Titles");
+        System.out.println("3 - List all Books - Ascendent Authors");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
     }
