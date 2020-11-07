@@ -411,8 +411,9 @@ public class UserScreen {
             }
             if (readerId != null && readerId > 0) {
                 Readers reader = dataControl.checkIdReader(readerId); // call function check id reader is valid, and return reader
-                System.out.println(reader);
+                
                 if (reader != null) {
+                    System.out.println(reader);
                     if (dataControl.checkReaderCurrentBorrows(reader, booksArray) != null) {
                         String toPrint = "";
                         for (Books book : booksArray) {
