@@ -127,12 +127,12 @@ public class UserScreen {
             case 221:// Search Reader by ID  again
                 searchReaderScreen("ID");
                 break;
-            case 23: //List all Readers (Ascendent Name)
+            case 23: //List all Readers (Ascendant Name)
                 this.option = option;
                 this.parentOption = 2;
                 sortReaderScreen(option, "Name");
                 break;
-            case 24: // List all Readers (Ascendent ID)
+            case 24: // List all Readers (Ascendant ID)
                 this.option = option;
                 this.parentOption = 2;
                 sortReaderScreen(option, "ID");
@@ -234,8 +234,8 @@ public class UserScreen {
         System.out.println("\n( 1 ) Book Screen:\n");
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Search a Book by Title and/or Author");
-        System.out.println("2 - List all Books - Ascendent Titles");
-        System.out.println("3 - List all Books - Ascendent Authors");
+        System.out.println("2 - List all Books - Ascendant Titles");
+        System.out.println("3 - List all Books - Ascendant Authors");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
     }
@@ -306,8 +306,8 @@ public class UserScreen {
         System.out.println("Select one of the options bellow:\n");
         System.out.println("1 - Search a Reader by Name and/or Surname");
         System.out.println("2 - Search a Reader by ID");
-        System.out.println("3 - List all Readers - Ascendent Name");
-        System.out.println("4 - List all Readers - Ascendent ID");
+        System.out.println("3 - List all Readers - Ascendant Name");
+        System.out.println("4 - List all Readers - Ascendant ID");
         System.out.println("0 - Return to Main Screen");
         System.out.println("9 - Exit");
     }
