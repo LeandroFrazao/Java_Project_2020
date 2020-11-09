@@ -60,13 +60,13 @@ public class ReadWriteFile {
             try {
                 if (file.equals("borrows.csv")) {
                     //readers file is sorted by ID already
-                    int idReader = DataControl.binarySearchAuthorId(readers, Integer.parseInt(data[0]), 0, readers.size());
+                    int idReader = DataControl.binarySearchReaderId(readers, Integer.parseInt(data[0]), 0, readers.size());
                     int idBook = DataControl.binarySearchBooksId(books, Integer.parseInt(data[1]), 0, books.size());
                     Borrows borrow = new Borrows(readers.get(idReader), books.get(idBook), data[2]);
                     borrows.add(borrow);
                     return borrows;
                 } else if (file.equals("returns.csv")) {
-                    int idReader = DataControl.binarySearchAuthorId(readers, Integer.parseInt(data[0]), 0, readers.size());
+                    int idReader = DataControl.binarySearchReaderId(readers, Integer.parseInt(data[0]), 0, readers.size());
                     int idBook = DataControl.binarySearchBooksId(books, Integer.parseInt(data[1]), 0, books.size());
                     Returns retBook = new Returns(readers.get(idReader), books.get(idBook), data[2], data[3]);
                     returns.add(retBook);

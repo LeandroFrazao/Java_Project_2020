@@ -88,7 +88,7 @@ public class DataControl {
             searchReaderName(joinName(firstName, lastName)); // it calls a function that sort Readers by Name
         } else if (option.equals("ID")) { //if user decided to sort by ID 
             checkAndSort("readers");//function to check if an array is already sorted by some type
-            int idReader = (binarySearchAuthorId(readers, id, 0, readers.size()));
+            int idReader = (binarySearchReaderId(readers, id, 0, readers.size()));
             if (idReader > 0) { // if function return -1. means that ID wasnt found.
 
                 System.out.println(readers.get(idReader));
@@ -173,7 +173,7 @@ public class DataControl {
     }
 
     // recursive way to search an ID using Binary algorithm
-    public static int binarySearchAuthorId(ArrayList<Readers> array, int target, int low, int high) {
+    public static int binarySearchReaderId(ArrayList<Readers> array, int target, int low, int high) {
 
         int mid = (low + high) / 2;
         if (low <= high && mid < array.size()) {// recursive continue while Low is <= Hight and mid lower than the size of the array.(including this comparison I could fix a bug) 
@@ -182,10 +182,10 @@ public class DataControl {
                 return mid;
             } else if (array.get(mid).getId() > target) {
                 //System.out.println(array.get(mid).getTitle());
-                return binarySearchAuthorId(array, target, low, mid - 1);
+                return binarySearchReaderId(array, target, low, mid - 1);
             } else if (array.get(mid).getId() < target) {
                 //System.out.println(array.get(mid).getTitle());
-                return binarySearchAuthorId(array, target, mid + 1, high);
+                return binarySearchReaderId(array, target, mid + 1, high);
             }
         } else {
             return -1;
@@ -417,7 +417,7 @@ public class DataControl {
     public Readers checkIdReader(Integer id) {
         this.choice = "ID"; // this variable loads the user choice to be used in the compareReaders function. 
         checkAndSort("readers");//function to check if an array is already sorted by some type
-        id = binarySearchAuthorId(readers, id, 0, readers.size());
+        id = binarySearchReaderId(readers, id, 0, readers.size());
         if (id > 0) { // if function return greater than 0. means that ID was found.
             return readers.get(id);
         }
